@@ -52,6 +52,11 @@ class Ui_MainWindow(object):
         self.VeryHappy.setFlat(True)
         self.VeryHappy.setObjectName("VeryHappy")
         self.gridLayout.addWidget(self.VeryHappy, 0, 0, 1, 1)
+        #import Very Happy sound
+        #pronunciation_en_very_happy
+        self.VeryHappy.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/pronunciation_en_neutral.mp3"))
+        #pronunciation_en_very_happy
+        
         self.Happy = QtWidgets.QPushButton(self.Emojitabell)
         self.Happy.setText("")
         icon1 = QtGui.QIcon()
@@ -77,7 +82,7 @@ class Ui_MainWindow(object):
         self.Sad.setObjectName("Sad")
         self.gridLayout.addWidget(self.Sad, 1, 0, 1, 1)
         #import sad sound
-        self.Sad.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/sad00001.mp3"))
+        self.Sad.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/pronunciation_en_sad.mp3"))
 
         self.neutral = QtWidgets.QPushButton(self.Emojitabell)
         self.neutral.setText("")
