@@ -53,7 +53,7 @@ class Ui_MainWindow(object):
         self.VeryHappy.setObjectName("VeryHappy")
         self.gridLayout.addWidget(self.VeryHappy, 0, 0, 1, 1)
         #import Very Happy sound
-     
+        self.VeryHappy.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/VeryHappy.mp3"))
         
         self.Happy = QtWidgets.QPushButton(self.Emojitabell)
         self.Happy.setText("")
@@ -82,7 +82,7 @@ class Ui_MainWindow(object):
         self.Sad.setObjectName("Sad")
         self.gridLayout.addWidget(self.Sad, 1, 0, 1, 1)
         #import sad sound
-        self.Sad.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/pronunciation_en_sad.mp3"))
+        self.Sad.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/Sad.mp3"))
 
         self.neutral = QtWidgets.QPushButton(self.Emojitabell)
         self.neutral.setText("")
@@ -95,6 +95,9 @@ class Ui_MainWindow(object):
         self.neutral.setFlat(True)
         self.neutral.setObjectName("neutral")
         self.gridLayout.addWidget(self.neutral, 1, 1, 1, 1)
+        #import neutral sound
+        self.neutral.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/Neutral.mp3"))
+
         self.Angry = QtWidgets.QPushButton(self.Emojitabell)
         self.Angry.setText("")
         icon4 = QtGui.QIcon()
@@ -106,6 +109,9 @@ class Ui_MainWindow(object):
         self.Angry.setFlat(True)
         self.Angry.setObjectName("Angry")
         self.gridLayout.addWidget(self.Angry, 2, 0, 1, 1)
+        #import angry sound
+        self.Angry.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/Angry.mp3"))
+
         self.tired = QtWidgets.QPushButton(self.Emojitabell)
         self.tired.setText("")
         icon5 = QtGui.QIcon()
@@ -117,6 +123,10 @@ class Ui_MainWindow(object):
         self.tired.setFlat(True)
         self.tired.setObjectName("tired")
         self.gridLayout.addWidget(self.tired, 2, 1, 1, 1)
+        #import tired sound
+        self.tired.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/Tired.mp3"))
+
+
         self.TodaysCalander = QtWidgets.QFrame(self.centralwidget)
         self.TodaysCalander.setGeometry(QtCore.QRect(70, 60, 121, 111))
         self.TodaysCalander.setAutoFillBackground(False)
