@@ -9,7 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-
+from audio import AudioPlayer
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -62,6 +62,8 @@ class Ui_MainWindow(object):
         self.Happy.setFlat(True)
         self.Happy.setObjectName("Happy")
         self.gridLayout.addWidget(self.Happy, 0, 1, 1, 1)
+
+
         self.Sad = QtWidgets.QPushButton(self.Emojitabell)
         self.Sad.setText("")
         icon2 = QtGui.QIcon()
@@ -73,6 +75,9 @@ class Ui_MainWindow(object):
         self.Sad.setFlat(True)
         self.Sad.setObjectName("Sad")
         self.gridLayout.addWidget(self.Sad, 1, 0, 1, 1)
+        #import sad sound
+        self.Sad.clicked.connect(lambda: self.audio_player.play_sound("audio/sad00001.mp3"))
+
         self.neutral = QtWidgets.QPushButton(self.Emojitabell)
         self.neutral.setText("")
         icon3 = QtGui.QIcon()
