@@ -20,6 +20,7 @@ class Ui_MainWindow(object):
 "    background-color: rgb(185, 217, 186);\n"
 "}\n"
 "")
+        self.audio_player = AudioPlayer()
         MainWindow.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setStyleSheet("")
@@ -76,7 +77,7 @@ class Ui_MainWindow(object):
         self.Sad.setObjectName("Sad")
         self.gridLayout.addWidget(self.Sad, 1, 0, 1, 1)
         #import sad sound
-        self.Sad.clicked.connect(lambda: self.audio_player.play_sound("audio/sad00001.mp3"))
+        self.Sad.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/sad00001.mp3"))
 
         self.neutral = QtWidgets.QPushButton(self.Emojitabell)
         self.neutral.setText("")
