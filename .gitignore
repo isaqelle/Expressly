@@ -1,0 +1,10 @@
+# Ignorera Firebase-nyckeln
+serviceAccountKey.json
+
+# Ignorera virtuella miljöer
+venv/
+__pycache__/
+
+# Ignorera OS-specifika filer
+.DS_Store
+Thumbs.db
