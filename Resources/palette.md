@@ -15,3 +15,11 @@
 ## Emoji red:
 
 #ea9789
+
+## Darker green (background for Calendar title):
+
+#8caa9a
+
+## Lighter brown (backsround for the textboxes in calendar):
+
+#d3ccba
