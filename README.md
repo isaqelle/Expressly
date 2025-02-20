@@ -3,7 +3,7 @@
 <p>
     The Expressly App is designed to assist individuals who have difficulty communicating their emotions and thoughts. This user-friendly application enables users to express themselves through buttons.
     It is particularly beneficial for individuals with non-verbal autism, communication disorders, cognitive impairments, and learning disabilities.
-    To achive this, the app provides a simple interface with 6 different emoji buttons that represent different emotions. Expressly does also provide a scheduler to help users plan and track their daily activities and the emotions than can be associated with them.
+    To achive this, the app provides a simple interface with 6 different emoji buttons that represent different emotions. Expressly does also provide a simple diary to help users reflect over their daily activities and the emotions than can be associated with them.
     Further, the user can look at the history of their emotions and activities in a calendar view.
 
    This app is developed to support and improve mental health, more specifically it is focusing on SDG goal 3.4:
@@ -18,11 +18,9 @@
 😄 <b>Emoji Buttons</b><br>
 Distinct emoji buttons with accompanying sounds to help users express their emotions.<br>
 📆 <b>Calender</b><br>
-Calendar to track emotions and activities.<br>
+Calendar to track emotions, activities and their energylevels.<br>
 🔋 <b>Energybattery</b><br>
 Interactive energybattery connected to activities.<br>
-📝 <b>Scheduler</b><br>
-Scheduler to plan and organize daily activities.<br>
 📖 <b>Journal</b><br>
 Daily reflection and notes.<br>
 
