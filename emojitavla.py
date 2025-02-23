@@ -10,6 +10,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from audio import AudioPlayer
+from calender import Ui_Form
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -20,6 +21,7 @@ class Ui_MainWindow(object):
 "    background-color: rgb(185, 217, 186);\n"
 "}\n"
 "")
+        # Emoji table
         self.audio_player = AudioPlayer()
         MainWindow.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -141,6 +143,7 @@ class Ui_MainWindow(object):
 "border-radius: 10px; \n"
 "}\n"
 "")
+        #Calendar
         self.TodaysCalander.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.TodaysCalander.setFrameShadow(QtWidgets.QFrame.Raised)
         self.TodaysCalander.setObjectName("TodaysCalander")
@@ -180,6 +183,7 @@ class Ui_MainWindow(object):
         self.pushButton.setIconSize(QtCore.QSize(120, 50))
         self.pushButton.setFlat(True)
         self.pushButton.setObjectName("pushButton")
+        self.pushButton.clicked.connect(self.openCalendar)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 500, 18))
@@ -195,6 +199,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        
+    def openCalendar(self):
+        self.calendar_window = QtWidgets.QMainWindow()
+        self.ui = Ui_Form()  # Skapa en instans av kalendern
+        self.ui.setupUi(self.calendar_window)
+        self.calendar_window.show()
 
 
 if __name__ == "__main__":
