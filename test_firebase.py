@@ -1,10 +1,12 @@
+import os
+print("Current working directory:", os.getcwd())
 import firebase_admin # type: ignore
 from firebase_admin import credentials, firestore # type: ignore
 
 print("\U0001F680 Test Firebase startar...")  # Debug-meddelande
 
 # Ladda upp anslutningsnyckeln
-cred = credentials.Certificate("C:\\Skola\\agila\\project\\Agile-Demo\\exprey-f5b5f-firebase-adminsdk-fbsvc-e717588d99.json")
+cred = credentials.Certificate("serviceAccountKey.json")
 firebase_admin.initialize_app(cred)
 
 print("\U0001F504 Importerad firebase_admin!")  # Debug-meddelande

@@ -1,3 +1,8 @@
+import os
+print("Current working directory:", os.getcwd())
+print("Checking if serviceAccountKey.json exists:", os.path.isfile("serviceAccountKey.json"))
+import firebase_admin
+from firebase_admin import credentials, firestore
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPainter, QColor, QFont
 from PyQt5.QtCore import Qt, QDate
@@ -57,6 +62,12 @@ class BatteryWidget(QtWidgets.QWidget):
         else:
             return "#86c077"  # Grön (hög energi)
 
+# 🔹 Kontrollera om Firebase redan är initierat för att undvika krascher
+if not firebase_admin._apps:
+    cred = credentials.Certificate("serviceAccountKey.json")
+    firebase_admin.initialize_app(cred)
+
+db = firestore.client()  # 🔹 Firestore-klient
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -64,8 +75,6 @@ class Ui_Form(object):
         Form.resize(800, 600)
         Form.setFixedSize(800, 600)
         Form.setStyleSheet("background-color: rgb(232, 228, 214);")
-
-        self.data_store = {}  # Store data per date
 
         # Calendar
         self.label = QtWidgets.QLabel(Form)
@@ -144,6 +153,35 @@ class Ui_Form(object):
         self.dialog.setLayout(layout)
         self.dialog.exec_()
 
+    # Save diary entry without deleting activities
+    def saveData(self):
+        selected_date = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
+        diary_text = self.plainTextEdit_2.toPlainText()
+        activities_text = self.plainTextEdit.toPlainText()
+
+        # Delete empty lines
+        cleaned_activities = "\n".join([line for line in activities_text.split("\n") if line.strip()])
+
+        try:
+            # Get reference to Firestore
+            doc_ref = db.collection("calendar_entries").document(selected_date)
+
+            # Save whats in GUI to firestore
+            data = {
+                "diary": diary_text,
+                "activities": cleaned_activities
+            }
+
+            doc_ref.set(data)  # Send data to Firestore
+            self.plainTextEdit.setPlainText(cleaned_activities)  # Update GUI without empty lines
+
+            print(f"✅ Data saved for {selected_date}")  # Debugging
+
+        except Exception as e:
+            print(f" Failed to save data: {e}")  # Debugging
+
+
+    # Save activities  without deleting diary
     def saveActivity(self):
         activity_text = self.activity_input.text()
         energy_level = self.battery.energy_level
@@ -151,27 +189,46 @@ class Ui_Form(object):
 
         if activity_text.strip():
             entry = f"{activity_text} (Energy: {energy_level}/10)\n"
-            if selected_date not in self.data_store:
-                self.data_store[selected_date] = {"diary": "", "activities": ""}
-            self.data_store[selected_date]["activities"] += entry
-            self.updateTextFields()
-            self.dialog.close()
 
-    def saveData(self):
-        selected_date = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
-        if selected_date not in self.data_store:
-            self.data_store[selected_date] = {"diary": "", "activities": ""}
-        self.data_store[selected_date]["diary"] = self.plainTextEdit_2.toPlainText()
+            try:
+                # Get refenrece to Firestore
+                doc_ref = db.collection("calendar_entries").document(selected_date)
+                existing_data = doc_ref.get().to_dict() or {"diary": "", "activities": ""}
 
+                # Add activity
+                updated_activities = existing_data["activities"] + entry if existing_data["activities"] else entry
+
+                # Update Firestore
+                doc_ref.set({
+                    "diary": existing_data["diary"],  
+                    "activities": updated_activities
+                })
+
+                self.plainTextEdit.setPlainText(updated_activities)  # Update GUI
+                self.dialog.close()  # Close activity window
+
+                print(f"Activity saved for {selected_date}")  # Debugging
+
+            except Exception as e:
+                print(f"Failed to save activity: {e}")  # Debugging
+
+    # Get data from Firebase
     def updateTextFields(self):
         selected_date = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
-        if selected_date in self.data_store:
-            self.plainTextEdit_2.setPlainText(self.data_store[selected_date]["diary"])
-            self.plainTextEdit.setPlainText(self.data_store[selected_date]["activities"])
-        else:
-            self.plainTextEdit_2.clear()
-            self.plainTextEdit.clear()
 
+        try:
+            doc_ref = db.collection("calendar_entries").document(selected_date)
+            data = doc_ref.get().to_dict()
+
+            if data:
+                self.plainTextEdit_2.setPlainText(data.get("diary", ""))
+                self.plainTextEdit.setPlainText(data.get("activities", ""))
+            else:
+                self.plainTextEdit_2.clear()
+                self.plainTextEdit.clear()
+
+        except Exception as e:
+            print(f" Failed to load data: {e}")  # Debugging
 
 if __name__ == "__main__":
     import sys
