@@ -1,7 +1,11 @@
-# audio.py
 import os
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from PyQt5 import QtCore
+
+# ------------------------------
+# SECTION: Audio Player
+# Manages the audio playing when pressing the emojis
+# ------------------------------
 
 class AudioPlayer:
     def __init__(self):

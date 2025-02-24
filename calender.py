@@ -1,13 +1,19 @@
 import os
-print("Current working directory:", os.getcwd())
-print("Checking if serviceAccountKey.json exists:", os.path.isfile("serviceAccountKey.json"))
 import firebase_admin
 from firebase_admin import credentials, firestore
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QPainter, QColor, QFont
 from PyQt5.QtCore import Qt, QDate
 
+# Some debugging code, checking the current working directory and verifying that "serviceAccountKey.json" existis
+print("Current working directory:", os.getcwd())
+print("Checking if serviceAccountKey.json exists:", os.path.isfile("serviceAccountKey.json"))
 
+
+# ------------------------------
+# SECTION: Battery Widget
+# Paints up the battery using QPainter and QColor
+# ------------------------------
 class BatteryWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
@@ -18,6 +24,7 @@ class BatteryWidget(QtWidgets.QWidget):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
+        # Setting size of the battery
         battery_x, battery_y, battery_width, battery_height = 30, 40, 200, 60
         # Draw battery outline
         painter.setPen(Qt.black)
@@ -34,7 +41,7 @@ class BatteryWidget(QtWidgets.QWidget):
             painter.setBrush(QColor("#D3D3D3"))  
             painter.drawRect(battery_x, battery_y, battery_width, battery_height)
 
-        # Energy text
+        # "Energy level" text
         painter.setFont(QFont("Arial", 14, QFont.Bold))
         painter.setPen(Qt.black)
         painter.drawText(battery_x, battery_y + 90, f"Energy level: {self.energy_level}/10")  # Align text with battery
@@ -52,22 +59,31 @@ class BatteryWidget(QtWidgets.QWidget):
             self.energy_level = max(0, min(int((x_position - battery_left) / (battery_right - battery_left) * 10), 10))
             self.update()
 
+    # Setting the colors in the battery
     def getEnergyColor(self, value):
         if value == 0:
-            return "#D3D3D3"  # Ljusgrå (tomt)
+            return "#D3D3D3"  # Default color/ empty battery color, lightgray
         elif value <= 3:
-            return "#ea9789"  # Röd (låg energi)
+            return "#ea9789"  # Red (low energy, from 3 or lower)
         elif value <= 7:
-            return "#eaca97"  # Orange (medel energi)
+            return "#eaca97"  # Orange (medium energy, from 7 or lower)
         else:
-            return "#86c077"  # Grön (hög energi)
+            return "#86c077"  # Green (high anergy, over 7)
 
-# 🔹 Kontrollera om Firebase redan är initierat för att undvika krascher
+# ------------------------------
+# SECTION: Firebase
+# Initialize Firebase using service account credentials and create a Firestore client to interact with the database.
+# ------------------------------
+
 if not firebase_admin._apps:
     cred = credentials.Certificate("serviceAccountKey.json")
     firebase_admin.initialize_app(cred)
 
-db = firestore.client()  # 🔹 Firestore-klient
+db = firestore.client() 
+
+# ------------------------------
+# SECTION: Calender Window
+# ------------------------------
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -76,55 +92,63 @@ class Ui_Form(object):
         Form.setFixedSize(800, 600)
         Form.setStyleSheet("background-color: rgb(232, 228, 214);")
 
-        # Calendar
-        self.label = QtWidgets.QLabel(Form)
-        self.label.setGeometry(30, 10, 730, 70)
-        self.label.setStyleSheet("font: 36pt \"MS Shell Dlg 2\";\ncolor: #b9d9ba;\nbackground-color: #8caa9a;")
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.setText("CALENDAR")
+        # Calendar Label ("CALENDAR" title)
+        self.calendarLabel = QtWidgets.QLabel(Form)
+        self.calendarLabel.setGeometry(30, 10, 730, 70)
+        self.calendarLabel.setStyleSheet("font: 36pt \"MS Shell Dlg 2\";\ncolor: #b9d9ba;\nbackground-color: #8caa9a;")
+        self.calendarLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.calendarLabel.setText("CALENDAR")
 
+        # Displays the calendar
         self.calendarWidget = QtWidgets.QCalendarWidget(Form)
         self.calendarWidget.setGeometry(30, 100, 350, 250)
         self.calendarWidget.setStyleSheet("background-color: rgb(211, 204, 186);")
         self.calendarWidget.selectionChanged.connect(self.updateTextFields)
 
-        # Diary
-        self.label_2 = QtWidgets.QLabel(Form)
-        self.label_2.setGeometry(410, 100, 350, 30)
-        self.label_2.setStyleSheet("font: 15pt \"MS Shell Dlg 2\";\ncolor: #b9d9ba;\nbackground-color: #8caa9a")
-        self.label_2.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_2.setText("DIARY")
+        # Diary Label ("DIARY" title)
+        self.diaryLabel = QtWidgets.QLabel(Form)
+        self.diaryLabel.setGeometry(410, 100, 350, 30)
+        self.diaryLabel.setStyleSheet("font: 15pt \"MS Shell Dlg 2\";\ncolor: #b9d9ba;\nbackground-color: #8caa9a")
+        self.diaryLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.diaryLabel.setText("DIARY")
 
-        self.plainTextEdit_2 = QtWidgets.QPlainTextEdit(Form)
-        self.plainTextEdit_2.setGeometry(410, 130, 350, 410)
-        self.plainTextEdit_2.setStyleSheet("background-color: rgb(211, 204, 186);")
-        self.plainTextEdit_2.setPlaceholderText("Tell me about your day...")
+        # Diary textbox
+        self.diaryTextbox = QtWidgets.QPlainTextEdit(Form)
+        self.diaryTextbox.setGeometry(410, 130, 350, 410)
+        self.diaryTextbox.setStyleSheet("background-color: rgb(211, 204, 186);")
+        self.diaryTextbox.setPlaceholderText("Tell me about your day...")
 
-        # Activities
-        self.label_3 = QtWidgets.QLabel(Form)
-        self.label_3.setGeometry(30, 380, 350, 30)
-        self.label_3.setStyleSheet("font: 15pt \"MS Shell Dlg 2\";\ncolor: #b9d9ba;\nbackground-color: #8caa9a")
-        self.label_3.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_3.setText("ACTIVITIES")
+        # Activities label ("ACTIVITIES" title)
+        self.activitiesLabel = QtWidgets.QLabel(Form)
+        self.activitiesLabel.setGeometry(30, 380, 350, 30)
+        self.activitiesLabel.setStyleSheet("font: 15pt \"MS Shell Dlg 2\";\ncolor: #b9d9ba;\nbackground-color: #8caa9a")
+        self.activitiesLabel.setAlignment(QtCore.Qt.AlignCenter)
+        self.activitiesLabel.setText("ACTIVITIES")
 
+        # Activities textbox
         self.plainTextEdit = QtWidgets.QPlainTextEdit(Form)
         self.plainTextEdit.setGeometry(30, 410, 350, 130)
         self.plainTextEdit.setStyleSheet("background-color: rgb(211, 204, 186);")
+        self.plainTextEdit.setPlaceholderText("No added activities yet...")
 
-        # Save button
-        self.pushButton_2 = QtWidgets.QPushButton(Form)
-        self.pushButton_2.setGeometry(410, 550, 350, 40)
-        self.pushButton_2.setStyleSheet("font: 10pt \"MS Gothic\";\ncolor: rgb(255, 251, 225);\nbackground-color: #8caa9a")
-        self.pushButton_2.setText("Save Changes")
-        self.pushButton_2.clicked.connect(self.saveData)
+        # Save Changes button
+        self.saveDiaryButton = QtWidgets.QPushButton(Form)
+        self.saveDiaryButton.setGeometry(410, 550, 350, 40)
+        self.saveDiaryButton.setStyleSheet("font: 10pt \"MS Gothic\";\ncolor: rgb(255, 251, 225);\nbackground-color: #8caa9a")
+        self.saveDiaryButton.setText("Save Changes")
+        self.saveDiaryButton.clicked.connect(self.saveData)
 
-        # Open activity window
-        self.openWindowButton = QtWidgets.QPushButton(Form)
-        self.openWindowButton.setGeometry(30, 550, 350, 40)
-        self.openWindowButton.setText("Add Activity")
-        self.openWindowButton.setStyleSheet("font: 10pt \"MS Gothic\";\ncolor: rgb(255, 251, 225);\nbackground-color: #8caa9a")
-        self.openWindowButton.clicked.connect(self.openNewWindow)
+        # Add activity button
+        self.addActivityButton = QtWidgets.QPushButton(Form)
+        self.addActivityButton.setGeometry(30, 550, 350, 40)
+        self.addActivityButton.setText("Add Activity")
+        self.addActivityButton.setStyleSheet("font: 10pt \"MS Gothic\";\ncolor: rgb(255, 251, 225);\nbackground-color: #8caa9a")
+        self.addActivityButton.clicked.connect(self.openNewWindow)
         self.updateTextFields()
+
+# ------------------------------
+# SECTION: "Add activity" window
+# ------------------------------
 
     def openNewWindow(self):
         self.dialog = QtWidgets.QDialog()
@@ -154,13 +178,15 @@ class Ui_Form(object):
         self.dialog.setLayout(layout)
         self.dialog.exec_()
 
-    # Save diary entry without deleting activities
+# ------------------------------
+# SECTION: Save the data from "Add activity" window
+# ------------------------------
+
     def saveData(self):
         selected_date = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
-        diary_text = self.plainTextEdit_2.toPlainText()
+        diary_text = self.diaryTextbox.toPlainText()
         activities_text = self.plainTextEdit.toPlainText()
 
-        # Delete empty lines
         cleaned_activities = "\n".join([line for line in activities_text.split("\n") if line.strip()])
 
         try:
@@ -222,10 +248,10 @@ class Ui_Form(object):
             data = doc_ref.get().to_dict()
 
             if data:
-                self.plainTextEdit_2.setPlainText(data.get("diary", ""))
+                self.diaryTextbox.setPlainText(data.get("diary", ""))
                 self.plainTextEdit.setPlainText(data.get("activities", ""))
             else:
-                self.plainTextEdit_2.clear()
+                self.diaryTextbox.clear()
                 self.plainTextEdit.clear()
 
         except Exception as e:
