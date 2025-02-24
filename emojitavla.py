@@ -199,6 +199,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        
+    def openCalendar(self):
+        self.calendar_window = QtWidgets.QMainWindow()
+        self.ui = Ui_Form()  # Skapa en instans av kalendern
+        self.ui.setupUi(self.calendar_window)
+        self.calendar_window.show()
 
 
 if __name__ == "__main__":
