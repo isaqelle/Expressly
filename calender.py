@@ -126,10 +126,10 @@ class Ui_Form(object):
         self.activitiesLabel.setText("ACTIVITIES")
 
         # Activities textbox
-        self.plainTextEdit = QtWidgets.QPlainTextEdit(Form)
-        self.plainTextEdit.setGeometry(30, 410, 350, 130)
-        self.plainTextEdit.setStyleSheet("background-color: rgb(211, 204, 186);")
-        self.plainTextEdit.setPlaceholderText("No added activities yet...")
+        self.activitiesTextbox = QtWidgets.QPlainTextEdit(Form)
+        self.activitiesTextbox.setGeometry(30, 410, 350, 130)
+        self.activitiesTextbox.setStyleSheet("background-color: rgb(211, 204, 186);")
+        self.activitiesTextbox.setPlaceholderText("No added activities yet...")
 
         # Save Changes button
         self.saveDiaryButton = QtWidgets.QPushButton(Form)
@@ -170,10 +170,10 @@ class Ui_Form(object):
         self.battery = BatteryWidget()
         layout.addWidget(self.battery)
 
-        self.save_button = QtWidgets.QPushButton("Save Activity")
-        self.save_button.setStyleSheet("font: 10pt \"MS Gothic\";\ncolor: rgb(255, 251, 225);\nbackground-color: #8caa9a")
-        self.save_button.clicked.connect(self.saveActivity)
-        layout.addWidget(self.save_button)
+        self.saveActivityButton = QtWidgets.QPushButton("Save Activity")
+        self.saveActivityButton.setStyleSheet("font: 10pt \"MS Gothic\";\ncolor: rgb(255, 251, 225);\nbackground-color: #8caa9a")
+        self.saveActivityButton.clicked.connect(self.saveActivity)
+        layout.addWidget(self.saveActivityButton)
 
         self.dialog.setLayout(layout)
         self.dialog.exec_()
@@ -185,7 +185,7 @@ class Ui_Form(object):
     def saveData(self):
         selected_date = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
         diary_text = self.diaryTextbox.toPlainText()
-        activities_text = self.plainTextEdit.toPlainText()
+        activities_text = self.activitiesTextbox.toPlainText()
 
         cleaned_activities = "\n".join([line for line in activities_text.split("\n") if line.strip()])
 
@@ -200,7 +200,7 @@ class Ui_Form(object):
             }
 
             doc_ref.set(data)  # Send data to Firestore
-            self.plainTextEdit.setPlainText(cleaned_activities)  # Update GUI without empty lines
+            self.activitiesTextbox.setPlainText(cleaned_activities)  # Update GUI without empty lines
 
             print(f"Data saved for {selected_date}")  # Debugging
 
@@ -231,7 +231,7 @@ class Ui_Form(object):
                     "activities": updated_activities
                 })
 
-                self.plainTextEdit.setPlainText(updated_activities)  # Update GUI
+                self.activitiesTextbox.setPlainText(updated_activities)  # Update GUI
                 self.dialog.close()  # Close activity window
 
                 print(f"Activity saved for {selected_date}")  # Debugging
@@ -249,10 +249,10 @@ class Ui_Form(object):
 
             if data:
                 self.diaryTextbox.setPlainText(data.get("diary", ""))
-                self.plainTextEdit.setPlainText(data.get("activities", ""))
+                self.activitiesTextbox.setPlainText(data.get("activities", ""))
             else:
                 self.diaryTextbox.clear()
-                self.plainTextEdit.clear()
+                self.activitiesTextbox.clear()
 
         except Exception as e:
             print(f" Failed to load data: {e}")  # Debugging
