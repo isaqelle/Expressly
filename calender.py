@@ -124,6 +124,7 @@ class Ui_Form(object):
         self.openWindowButton.setText("Add Activity")
         self.openWindowButton.setStyleSheet("font: 10pt \"MS Gothic\";\ncolor: rgb(255, 251, 225);\nbackground-color: #8caa9a")
         self.openWindowButton.clicked.connect(self.openNewWindow)
+        self.updateTextFields()
 
     def openNewWindow(self):
         self.dialog = QtWidgets.QDialog()
@@ -175,10 +176,10 @@ class Ui_Form(object):
             doc_ref.set(data)  # Send data to Firestore
             self.plainTextEdit.setPlainText(cleaned_activities)  # Update GUI without empty lines
 
-            print(f"✅ Data saved for {selected_date}")  # Debugging
+            print(f"Data saved for {selected_date}")  # Debugging
 
         except Exception as e:
-            print(f" Failed to save data: {e}")  # Debugging
+            print(f"Failed to save data: {e}")  # Debugging
 
 
     # Save activities  without deleting diary
