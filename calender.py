@@ -124,6 +124,7 @@ class Ui_Form(object):
         self.openWindowButton.setText("Add Activity")
         self.openWindowButton.setStyleSheet("font: 10pt \"MS Gothic\";\ncolor: rgb(255, 251, 225);\nbackground-color: #8caa9a")
         self.openWindowButton.clicked.connect(self.openNewWindow)
+        self.updateTextFields()
 
     def openNewWindow(self):
         self.dialog = QtWidgets.QDialog()
