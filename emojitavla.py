@@ -98,7 +98,7 @@ class Ui_MainWindow(object):
         self.sadEmoji.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/Sad.mp3"))
 
 # ------------------------------
-# SECTION: Emoji "Netural"
+# SECTION: Emoji "Neutral"
 # ------------------------------
 
         self.neutralEmoji = QtWidgets.QPushButton(self.emojiTable)
@@ -171,16 +171,21 @@ class Ui_MainWindow(object):
         self.TodaysCalander.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.TodaysCalander.setFrameShadow(QtWidgets.QFrame.Raised)
         self.TodaysCalander.setObjectName("TodaysCalander")
-        self.pushButton_8 = QtWidgets.QPushButton(self.TodaysCalander)
-        self.pushButton_8.setGeometry(QtCore.QRect(20, 20, 81, 71))
-        self.pushButton_8.setFocusPolicy(QtCore.Qt.StrongFocus)
-        self.pushButton_8.setText("")
+
+# ------------------------------
+# SECTION: "Today" button
+# ------------------------------
+
+        self.todayButton = QtWidgets.QPushButton(self.TodaysCalander)
+        self.todayButton.setGeometry(QtCore.QRect(20, 20, 81, 71))
+        self.todayButton.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.todayButton.setText("")
         icon6 = QtGui.QIcon()
         icon6.addPixmap(QtGui.QPixmap("bilder/Today.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton_8.setIcon(icon6)
-        self.pushButton_8.setIconSize(QtCore.QSize(125, 50))
-        self.pushButton_8.setFlat(True)
-        self.pushButton_8.setObjectName("pushButton_8")
+        self.todayButton.setIcon(icon6)
+        self.todayButton.setIconSize(QtCore.QSize(125, 50))
+        self.todayButton.setFlat(True)
+        self.todayButton.setObjectName("pushButton_8")
 
 # ------------------------------
 # SECTION: Calendar
@@ -203,16 +208,21 @@ class Ui_MainWindow(object):
         self.Calander.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.Calander.setFrameShadow(QtWidgets.QFrame.Raised)
         self.Calander.setObjectName("Calander")
-        self.pushButton = QtWidgets.QPushButton(self.Calander)
-        self.pushButton.setGeometry(QtCore.QRect(20, 20, 81, 71))
-        self.pushButton.setText("")
+
+# ------------------------------
+# SECTION: "Calendar" button
+# ------------------------------
+
+        self.calendarButton = QtWidgets.QPushButton(self.Calander)
+        self.calendarButton.setGeometry(QtCore.QRect(20, 20, 81, 71))
+        self.calendarButton.setText("")
         icon7 = QtGui.QIcon()
         icon7.addPixmap(QtGui.QPixmap("bilder/Calendar.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.pushButton.setIcon(icon7)
-        self.pushButton.setIconSize(QtCore.QSize(120, 50))
-        self.pushButton.setFlat(True)
-        self.pushButton.setObjectName("pushButton")
-        self.pushButton.clicked.connect(self.openCalendar)
+        self.calendarButton.setIcon(icon7)
+        self.calendarButton.setIconSize(QtCore.QSize(120, 50))
+        self.calendarButton.setFlat(True)
+        self.calendarButton.setObjectName("pushButton")
+        self.calendarButton.clicked.connect(self.openCalendar)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 500, 18))
