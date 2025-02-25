@@ -1,29 +1,58 @@
+import sys
 import unittest
-from PyQt5.QtWidgets import QApplication, QWidget
-from emojitavla import Ui_Form  # Make sure this points to your UI class
+from PyQt5 import QtWidgets
+from emojitavla import Ui_MainWindow
+from calendar_1 import Ui_Form
 
-class TestUI(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.app = QApplication([])  # Create a QApplication instance
-        cls.window = QWidget()  # Create a QWidget instance
-        cls.ui = Ui_Form()  # Initialize your UI class
-        cls.ui.setupUi(cls.window)  # Set up the UI with the QWidget
+class TestEmojiTavla(unittest.TestCase):
 
-    def test_add_activity_button_exists(self):
-        self.assertIsNotNone(self.ui.addActivityButton, "Add Activity button should exist")
+    def setUp(self):
+        """Set up the application and create the main window for testing."""
+        self.app = QtWidgets.QApplication(sys.argv)
+        self.main_window = QtWidgets.QMainWindow()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self.main_window)
 
-    def test_save_button_exists(self):
-        self.assertIsNotNone(self.ui.saveDiaryButton, "Save Changes button should exist")
+    def tearDown(self):
+        """Clean up after each test."""
+        self.main_window.close()
 
-    def test_activity_textbox_initialization(self):
-        self.assertEqual(self.ui.plainTextEdit.toPlainText(), "No added activities yet...", "Initial text should match placeholder")
+    def test_main_window_title(self):
+        """Test that the main window title is set correctly."""
+        self.assertEqual(self.main_window.windowTitle(), "Expressly")
 
-    def test_diary_textbox_initialization(self):
-        self.assertEqual(self.ui.diaryTextbox.toPlainText(), "", "Diary textbox should be empty initially")
+    def test_very_happy_emoji_click(self):
+        """Test clicking the 'Very Happy' emoji button."""
+        self.ui.veryHappyEmoji.click()  # Simulate button click
+     
+    def test_open_calendar(self):
+        """Test that clicking the calendar button opens the calendar window."""
+        self.ui.calendarButton.click()
+        self.assertTrue(self.ui.calendar_window.isVisible())  # Check if the calendar window is visible
 
-    def test_calendar_label_exists(self):
-        self.assertIsNotNone(self.ui.calendarLabel, "Calendar label should exist")
+class TestCalendar(unittest.TestCase):
 
-if __name__ == '__main__':
+    def setUp(self):
+        """Set up the application and create the calendar for testing."""
+        self.app = QtWidgets.QApplication(sys.argv)
+        self.form_window = QtWidgets.QMainWindow()
+        self.ui = Ui_Form()
+        self.ui.setupUi(self.form_window)
+
+    def tearDown(self):
+        """Clean up after each test."""
+        self.form_window.close()
+
+    def test_diary_placeholder(self):
+        """Test that the diary textbox has the correct placeholder text."""
+        self.assertEqual(self.ui.diaryTextbox.placeholderText(), "Tell me about your day...")
+
+    def test_save_button_functionality(self):
+        """Test the save diary button functionality."""
+        self.ui.diaryTextbox.setPlainText("Test entry")
+        self.ui.saveDiaryButton.click() 
+
+if __name__ == "__main__":
     unittest.main()
+
+# python -m unittest discover -s tester -p "*.py"   
