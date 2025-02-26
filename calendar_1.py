@@ -156,6 +156,8 @@ class Ui_Form(object):
         self.dialog = QtWidgets.QDialog()
         self.dialog.setWindowTitle("New Activity")
         self.dialog.setFixedSize(450, 600)
+        self.dialog.setStyleSheet("background-color: rgb(232, 228, 214);")
+
 
         layoutMain = QVBoxLayout()
 
@@ -216,7 +218,7 @@ class Ui_Form(object):
         for button in self.buttons:
             button.setStyleSheet("border: 2px solid transparent;")
         
-        selected_button.setStyleSheet("border: 2px solid red;")
+        selected_button.setStyleSheet("border: 2px solid green;")
 
         # Map selected button to mood
         mood_map = {
@@ -270,7 +272,7 @@ class Ui_Form(object):
         if activity_text.strip():
             mood_emoji = {  
                 "veryHappy": "ヽ(◕‿◕｡)ノ",
-                "happy": "	(◕‿◕)",  
+                "happy": "(◕‿◕)",  
                 "neutral": "ヽ(ー_ー )ノ",  
                 "sad": "(╯︵╰,)",
                 "tired": "(－_－) zzZ",
@@ -298,7 +300,7 @@ class Ui_Form(object):
                 existing_data = doc_ref.get().to_dict() or {"diary": "", "activities": ""}
 
                 # Add activity
-                updated_activities = (existing_data.get("activities", "") + entry).strip()
+                updated_activities = (existing_data.get("activities", "") + "\n" + entry).strip()
 
                 # Update Firestore
                 doc_ref.set({
