@@ -2,8 +2,10 @@ import os
 import firebase_admin
 from firebase_admin import credentials, firestore
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QPainter, QColor, QFont
+from PyQt5.QtGui import QPainter, QColor, QFont, QPixmap, QIcon
 from PyQt5.QtCore import Qt, QDate
+from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QHBoxLayout, QVBoxLayout
+from PyQt5.QtWidgets import QSpacerItem, QSizePolicy
 
 # Some debugging code, checking the current working directory and verifying that "serviceAccountKey.json" existis
 print("Current working directory:", os.getcwd())
@@ -153,31 +155,84 @@ class Ui_Form(object):
     def openNewWindow(self):
         self.dialog = QtWidgets.QDialog()
         self.dialog.setWindowTitle("New Activity")
-        self.dialog.setFixedSize(300, 350)
+        self.dialog.setFixedSize(450, 600)
+        self.dialog.setStyleSheet("background-color: rgb(232, 228, 214);")
 
-        layout = QtWidgets.QVBoxLayout()
+
+        layoutMain = QVBoxLayout()
 
         activity_label = QtWidgets.QLabel("Activity:")
         
-        layout.addWidget(activity_label)
+        layoutMain.addWidget(activity_label)
 
         self.activity_input = QtWidgets.QLineEdit()
-        layout.addWidget(self.activity_input)
+        layoutMain.addWidget(self.activity_input)
 
         energy_label = QtWidgets.QLabel("Energybattery:")
-        layout.addWidget(energy_label)
+        layoutMain.addWidget(energy_label)
 
         self.battery = BatteryWidget()
-        layout.addWidget(self.battery)
+        layoutMain.addWidget(self.battery)
+
+        
+        
+        emoji_label = QtWidgets.QLabel("Mood:")
+        layoutMain.addWidget(emoji_label)
+
+        layoutEmoji = QHBoxLayout()
+
+        # Horisontell layout för bilder
+        self.image_layout = QHBoxLayout()
+        self.image_paths = [
+            "bilder/grinning-face-with-big-eyes_1f603.png", "bilder/slightly-smiling-face_1f642.png", "bilder/neutral-face_1f610.png",
+            "bilder/crying-face_1f622.png", "bilder/sleeping-face_1f634.png", "bilder/pouting-face_1f621.png"
+        ]
+        self.buttons = []
+
+        for path in self.image_paths:
+            button = QPushButton()
+            button.setIcon(QIcon(path))
+            button.setIconSize(QtCore.QSize(50, 50))  # Sätt en rimlig storlek
+            button.setStyleSheet("border: 2px solid transparent;")  # Default style
+            button.clicked.connect(lambda checked, b=button: self.select_image(b))
+            self.image_layout.addWidget(button)
+            self.buttons.append(button)
+
+        layoutEmoji.addLayout(self.image_layout)
+        layoutMain.addLayout(layoutEmoji) 
+
+        spacer = QSpacerItem(10, 15, QSizePolicy.Minimum, QSizePolicy.Fixed)
+        layoutMain.addItem(spacer)
+
+
 
         self.saveActivityButton = QtWidgets.QPushButton("Save Activity")
         self.saveActivityButton.setStyleSheet("font: 10pt \"MS Gothic\";\ncolor: rgb(255, 251, 225);\nbackground-color: #8caa9a")
         self.saveActivityButton.clicked.connect(self.saveActivity)
-        layout.addWidget(self.saveActivityButton)
+        layoutMain.addWidget(self.saveActivityButton)
 
-        self.dialog.setLayout(layout)
+        self.dialog.setLayout(layoutMain)
         self.dialog.exec_()
 
+    def select_image(self, selected_button):
+        for button in self.buttons:
+            button.setStyleSheet("border: 2px solid transparent;")
+        
+        selected_button.setStyleSheet("border: 2px solid green;")
+
+        # Map selected button to mood
+        mood_map = {
+            self.buttons[0]: "veryHappy",
+            self.buttons[1]: "happy",
+            self.buttons[2]: "netural",
+            self.buttons[3]: "sad",
+            self.buttons[4]: "tired",
+            self.buttons[5]: "angry"
+            
+
+        }
+        
+        self.selected_mood = mood_map.get(selected_button, "neutral")
 # ------------------------------
 # SECTION: Save the data from "Add activity" window
 # ------------------------------
@@ -215,7 +270,29 @@ class Ui_Form(object):
         selected_date = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
 
         if activity_text.strip():
-            entry = f"{activity_text} (Energy: {energy_level}/10)\n"
+            mood_emoji = {  
+                "veryHappy": "ヽ(◕‿◕｡)ノ",
+                "happy": "(◕‿◕)",  
+                "neutral": "ヽ(ー_ー )ノ",  
+                "sad": "(╯︵╰,)",
+                "tired": "(－_－) zzZ",
+                "angry": "ヽ( `д´*)ノ"
+            }.get(self.selected_mood, "")  
+
+            entry = f"{activity_text} (Energy: {energy_level}/10) {mood_emoji}\n"
+
+
+            emoji_label = QtWidgets.QLabel()
+            if hasattr(self, 'selected_emoji'):
+                self.selected_emoji = None
+
+                # Create an entry widget with emoji and text
+                entry_widget = QtWidgets.QWidget()
+                entry_layout = QHBoxLayout(entry_widget)
+                entry_layout.addWidget(QtWidgets.QLabel(entry))  # Activity text
+                entry_layout.addWidget(emoji_label)  # Add emoji
+                entry_layout.addStretch()
+                entry_layout.setContentsMargins(0, 0, 0, 0)
 
             try:
                 # Get refenrece to Firestore
@@ -223,7 +300,7 @@ class Ui_Form(object):
                 existing_data = doc_ref.get().to_dict() or {"diary": "", "activities": ""}
 
                 # Add activity
-                updated_activities = existing_data["activities"] + entry if existing_data["activities"] else entry
+                updated_activities = (existing_data.get("activities", "") + "\n" + entry).strip()
 
                 # Update Firestore
                 doc_ref.set({
