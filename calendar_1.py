@@ -79,7 +79,7 @@ class BatteryWidget(QtWidgets.QWidget):
 # ------------------------------
 
 if not firebase_admin._apps:
-    cred = credentials.Certificate("exprey-f5b5f-a37378df5ef0.json")
+    cred = credentials.Certificate("serviceAccountKey.json")
     firebase_admin.initialize_app(cred)
 
 db = firestore.client() 
