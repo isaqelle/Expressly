@@ -6,7 +6,7 @@ from calendar_1 import Ui_Form
 # ------------------------------
 # SECTION: MainWindow
 # ------------------------------
-class Ui_MainWindow(object):
+class uiMainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(500, 400)
@@ -16,7 +16,7 @@ class Ui_MainWindow(object):
 "}\n"
 "")
         
-        self.audio_player = AudioPlayer()
+        self.audioPlayer = AudioPlayer()
         MainWindow.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setStyleSheet("")
@@ -59,7 +59,7 @@ class Ui_MainWindow(object):
         self.veryHappyEmoji.setObjectName("veryHappyEmoji")
         self.gridLayout.addWidget(self.veryHappyEmoji, 0, 0, 1, 1)
         #import Very happyEmoji sound
-        self.veryHappyEmoji.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/VeryHappy.mp3"))
+        self.veryHappyEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/VeryHappy.mp3"))
         
 # ------------------------------
 # SECTION: Emoji "Happy"
@@ -77,7 +77,7 @@ class Ui_MainWindow(object):
         self.happyEmoji.setObjectName("happyEmoji")
         self.gridLayout.addWidget(self.happyEmoji, 0, 1, 1, 1)
         #import happyEmoji sound
-        self.happyEmoji.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/Happy.mp3"))
+        self.happyEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/Happy.mp3"))
 
 # ------------------------------
 # SECTION: Emoji "Sad"
@@ -95,7 +95,7 @@ class Ui_MainWindow(object):
         self.sadEmoji.setObjectName("sadEmoji")
         self.gridLayout.addWidget(self.sadEmoji, 1, 0, 1, 1)
         #import sadEmoji sound
-        self.sadEmoji.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/Sad.mp3"))
+        self.sadEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/Sad.mp3"))
 
 # ------------------------------
 # SECTION: Emoji "Neutral"
@@ -113,7 +113,7 @@ class Ui_MainWindow(object):
         self.neutralEmoji.setObjectName("neutral")
         self.gridLayout.addWidget(self.neutralEmoji, 1, 1, 1, 1)
         #import neutral sound
-        self.neutralEmoji.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/Neutral.mp3"))
+        self.neutralEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/Neutral.mp3"))
 
 # ------------------------------
 # SECTION: Emoji "Angry"
@@ -130,7 +130,7 @@ class Ui_MainWindow(object):
         self.angryEmoji.setFlat(True)
         self.angryEmoji.setObjectName("Angry")
         self.gridLayout.addWidget(self.angryEmoji, 2, 0, 1, 1)
-        self.angryEmoji.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/Angry.mp3"))
+        self.angryEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/Angry.mp3"))
 
 # ------------------------------
 # SECTION: Emoji "Tired"
@@ -148,7 +148,7 @@ class Ui_MainWindow(object):
         self.tiredEmoji.setObjectName("tired")
         self.gridLayout.addWidget(self.tiredEmoji, 2, 1, 1, 1)
         #import tired sound
-        self.tiredEmoji.clicked.connect(lambda: self.audio_player.play_sound("audio_filer/Tired.mp3"))
+        self.tiredEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/Tired.mp3"))
 
 # ------------------------------
 # SECTION: Today
@@ -242,10 +242,10 @@ class Ui_MainWindow(object):
 
 # Opens the calendar when clicked
     def openCalendar(self):
-        self.calendar_window = QtWidgets.QMainWindow()
+        self.calendarWindow = QtWidgets.QMainWindow()
         self.ui = Ui_Form()  
-        self.ui.setupUi(self.calendar_window)
-        self.calendar_window.show()
+        self.ui.setupUi(self.calendarWindow)
+        self.calendarWindow.show()
 
 
 # Entry point, starts the program
@@ -253,7 +253,7 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
+    ui = uiMainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
