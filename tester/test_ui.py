@@ -8,6 +8,7 @@ from calendar_1 import Ui_Form
 
 # Run test
 # python -m unittest discover -s tester -p "*.py"
+# python -m unittest tester.test_ui
 
 class TestEmojiTavla(unittest.TestCase):
 
@@ -16,8 +17,7 @@ class TestEmojiTavla(unittest.TestCase):
     # Make sure QApplication is created only once for all tests
     # --------------------------------------------------------------
     @classmethod
-    def setUpClass(cls):
-       # cls.app = QtWidgets.QApplication(sys.argv)  
+    def setUpClass(cls): 
         """Ensure QApplication instance is created before tests"""
         cls.app = QApplication.instance()  # Get existing app instance if available
         if not cls.app:
@@ -47,7 +47,6 @@ class TestEmojiTavla(unittest.TestCase):
     # ------------------------------------------------------------------
     def test_very_happy_emoji_click(self):
         self.ui.veryHappyEmoji.click()  # Simulate button click
-        #self.ui.audio_player.playSound.assert_called_once_with("audio_filer/VeryHappy.mp3")
         self.ui.audioPlayer.playSound.assert_called_once_with("audio_filer/VeryHappy.mp3")
 
     # ------------------------------------------------------------------
