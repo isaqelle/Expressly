@@ -20,7 +20,7 @@ print("Checking if serviceAccountKey.json exists:", os.path.isfile("serviceAccou
 class BatteryWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
-        self.energy_level = 0  
+        self.energyLevel = 0  
         self.setFixedSize(300, 150)
 
     def paintEvent(self, event):
@@ -28,26 +28,26 @@ class BatteryWidget(QtWidgets.QWidget):
         painter.setRenderHint(QPainter.Antialiasing)
 
         # Setting size of the battery
-        battery_x, battery_y, battery_width, battery_height = 30, 40, 200, 60
+        batteryX, batteryY, batteryWidth, batteryHeight = 30, 40, 200, 60
         # Draw battery outline
         painter.setPen(Qt.black)
-        painter.drawRect(battery_x, battery_y, battery_width, battery_height)
-        painter.drawRect(battery_x + battery_width, battery_y + 20, 10, 20)  
+        painter.drawRect(batteryX, batteryY, batteryWidth, batteryHeight)
+        painter.drawRect(batteryX + batteryWidth, batteryY + 20, 10, 20)  
 
         # Fill battery
-        if self.energy_level > 0:
-            fill_width = int(battery_width * (self.energy_level / 10))
-            fill_color = self.getEnergyColor(self.energy_level)
-            painter.setBrush(QColor(fill_color))
-            painter.drawRect(battery_x, battery_y, fill_width, battery_height)
+        if self.energyLevel > 0:
+            fillWidth = int(batteryWidth * (self.energyLevel / 10))
+            fillColor = self.getEnergyColor(self.energyLevel)
+            painter.setBrush(QColor(fillColor))
+            painter.drawRect(batteryX, batteryY, fillWidth, batteryHeight)
         else:
             painter.setBrush(QColor("#D3D3D3"))  
-            painter.drawRect(battery_x, battery_y, battery_width, battery_height)
+            painter.drawRect(batteryX, batteryY, batteryWidth, batteryHeight)
 
         # "Energy level" text
         painter.setFont(QFont("Arial", 14, QFont.Bold))
         painter.setPen(Qt.black)
-        painter.drawText(battery_x, battery_y + 90, f"Energy level: {self.energy_level}/10")  # Align text with battery
+        painter.drawText(batteryX, batteryY + 90, f"Energy level: {self.energyLevel}/10")  # Align text with battery
 
     def mousePressEvent(self, event):
         self.updateEnergyLevel(event.x())
@@ -56,10 +56,11 @@ class BatteryWidget(QtWidgets.QWidget):
         if event.buttons() == Qt.LeftButton:
             self.updateEnergyLevel(event.x())
 
-    def updateEnergyLevel(self, x_position):
-        battery_left, battery_right = 30, 220
-        if battery_left <= x_position <= battery_right:
-            self.energy_level = max(0, min(int((x_position - battery_left) / (battery_right - battery_left) * 10), 10))
+    # The battery level
+    def updateEnergyLevel(self, xPosition):
+        batteryLeft, batteryRight = 30, 220
+        if batteryLeft <= xPosition <= batteryRight:
+            self.energyLevel = max(0, min(int((xPosition - batteryLeft) / (batteryRight - batteryLeft) * 10), 10))
             self.update()
 
     # Setting the colors in the battery
@@ -162,65 +163,62 @@ class Ui_Form(object):
         self.addActivityButton.setGeometry(30, 550, 350, 40)
         self.addActivityButton.setText("Add Activity")
         self.addActivityButton.setStyleSheet("font: 10pt \"MS Gothic\";\ncolor: rgb(255, 251, 225);\nbackground-color: #8caa9a")
-        self.addActivityButton.clicked.connect(self.openNewWindow)
+        self.addActivityButton.clicked.connect(self.openActivityWindow)
         self.updateTextFields()
 
 # ------------------------------
 # SECTION: "Add activity" window
 # ------------------------------
 
-    def openNewWindow(self):
-        self.dialog = QtWidgets.QDialog()
-        self.dialog.setWindowTitle("New Activity")
-        self.dialog.setFixedSize(450, 600)
-        self.dialog.setStyleSheet("background-color: rgb(232, 228, 214);")
+    def openActivityWindow(self):
+        self.ActivityDialog = QtWidgets.QDialog()
+        self.ActivityDialog.setWindowTitle("New Activity")
+        self.ActivityDialog.setFixedSize(450, 600)
+        self.ActivityDialog.setStyleSheet("background-color: rgb(232, 228, 214);")
 
 
         layoutMain = QVBoxLayout()
 
-        activity_label = QtWidgets.QLabel("Activity:")
-        
-        layoutMain.addWidget(activity_label)
+        activityLabel = QtWidgets.QLabel("Activity:")
+        layoutMain.addWidget(activityLabel)
 
-        self.activity_input = QtWidgets.QLineEdit()
-        layoutMain.addWidget(self.activity_input)
+        self.activityInput = QtWidgets.QLineEdit()
+        layoutMain.addWidget(self.activityInput)
 
-        energy_label = QtWidgets.QLabel("Energybattery:")
-        layoutMain.addWidget(energy_label)
+        energyLabel = QtWidgets.QLabel("Energybattery:")
+        layoutMain.addWidget(energyLabel)
 
         self.battery = BatteryWidget()
         layoutMain.addWidget(self.battery)
-
         
-        
-        emoji_label = QtWidgets.QLabel("Mood:")
-        layoutMain.addWidget(emoji_label)
+        emojiLabel = QtWidgets.QLabel("Mood:")
+        layoutMain.addWidget(emojiLabel)
 
         layoutEmoji = QHBoxLayout()
 
-        # Horisontell layout för bilder
-        self.image_layout = QHBoxLayout()
-        self.image_paths = [
+        # Horizontal layout for emoji images
+        self.imageLayout = QHBoxLayout()
+        self.emojiImagePaths = [
             "bilder/grinning-face-with-big-eyes_1f603.png", "bilder/slightly-smiling-face_1f642.png", "bilder/neutral-face_1f610.png",
             "bilder/crying-face_1f622.png", "bilder/sleeping-face_1f634.png", "bilder/pouting-face_1f621.png"
         ]
-        self.buttons = []
 
-        for path in self.image_paths:
+        self.emojiButtons = []
+
+        for path in self.emojiImagePaths:
             button = QPushButton()
             button.setIcon(QIcon(path))
-            button.setIconSize(QtCore.QSize(50, 50))  # Sätt en rimlig storlek
+            button.setIconSize(QtCore.QSize(50, 50))  # The size 
             button.setStyleSheet("border: 2px solid transparent;")  # Default style
-            button.clicked.connect(lambda checked, b=button: self.select_image(b))
-            self.image_layout.addWidget(button)
-            self.buttons.append(button)
+            button.clicked.connect(lambda checked, b=button: self.selectImage(b))
+            self.imageLayout.addWidget(button)
+            self.emojiButtons.append(button)
 
-        layoutEmoji.addLayout(self.image_layout)
+        layoutEmoji.addLayout(self.imageLayout)
         layoutMain.addLayout(layoutEmoji) 
 
         spacer = QSpacerItem(10, 15, QSizePolicy.Minimum, QSizePolicy.Fixed)
         layoutMain.addItem(spacer)
-
 
 
         self.saveActivityButton = QtWidgets.QPushButton("Save Activity")
@@ -228,53 +226,51 @@ class Ui_Form(object):
         self.saveActivityButton.clicked.connect(self.saveActivity)
         layoutMain.addWidget(self.saveActivityButton)
 
-        self.dialog.setLayout(layoutMain)
-        self.dialog.exec_()
+        self.ActivityDialog.setLayout(layoutMain)
+        self.ActivityDialog.exec_()
 
-    def select_image(self, selected_button):
-        for button in self.buttons:
+    def selectImage(self, selectedButton):
+        for button in self.emojiButtons:
             button.setStyleSheet("border: 2px solid transparent;")
         
-        selected_button.setStyleSheet("border: 2px solid green;")
+        selectedButton.setStyleSheet("border: 2px solid green;")
 
-        # Map selected button to mood
-        mood_map = {
-            self.buttons[0]: "veryHappy",
-            self.buttons[1]: "happy",
-            self.buttons[2]: "netural",
-            self.buttons[3]: "sad",
-            self.buttons[4]: "tired",
-            self.buttons[5]: "angry"
-            
-
+        # Dictionary that links each emoji button to a mood
+        moodMap = {
+            self.emojiButtons[0]: "veryHappy",
+            self.emojiButtons[1]: "happy",
+            self.emojiButtons[2]: "neutral",
+            self.emojiButtons[3]: "sad",
+            self.emojiButtons[4]: "tired",
+            self.emojiButtons[5]: "angry"
         }
         
-        self.selected_mood = mood_map.get(selected_button, "neutral")
+        self.selectedMood = moodMap.get(selectedButton, "neutral")
 # ------------------------------
 # SECTION: Save the data from "Add activity" window
 # ------------------------------
 
     def saveData(self):
-        selected_date = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
-        diary_text = self.diaryTextbox.toPlainText()
-        activities_text = self.activitiesTextbox.toPlainText()
+        selectedDate = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
+        diaryText = self.diaryTextbox.toPlainText()
+        activitiesText = self.activitiesTextbox.toPlainText()
 
-        cleaned_activities = "\n".join([line for line in activities_text.split("\n") if line.strip()])
+        cleanedActivities = "\n".join([line for line in activitiesText.split("\n") if line.strip()])
 
         try:
             # Get reference to Firestore
-            doc_ref = db.collection("calendar_entries").document(selected_date)
+            docRef = db.collection("calendar_entries").document(selectedDate)
 
             # Save whats in GUI to firestore
             data = {
-                "diary": diary_text,
-                "activities": cleaned_activities
+                "diary": diaryText,
+                "activities": cleanedActivities
             }
 
-            doc_ref.set(data)  # Send data to Firestore
-            self.activitiesTextbox.setPlainText(cleaned_activities)  # Update GUI without empty lines
+            docRef.set(data)  # Send data to Firestore
+            self.activitiesTextbox.setPlainText(cleanedActivities)  # Update GUI without empty lines
 
-            print(f"Data saved for {selected_date}")  # Debugging
+            print(f"Data saved for {selectedDate}")  # Debugging
 
         except Exception as e:
             print(f"Failed to save data: {e}")  # Debugging
@@ -282,63 +278,63 @@ class Ui_Form(object):
 
     # Save activities  without deleting diary
     def saveActivity(self):
-        activity_text = self.activity_input.text()
-        energy_level = self.battery.energy_level
-        selected_date = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
+        activityText = self.activityInput.text()
+        energyLevel = self.battery.energyLevel
+        selectedDate = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
 
-        if activity_text.strip():
-            mood_emoji = {  
+        if activityText.strip():
+            moodEmoji = {  
                 "veryHappy": "ヽ(◕‿◕｡)ノ",
                 "happy": "(◕‿◕)",  
                 "neutral": "ヽ(ー_ー )ノ",  
                 "sad": "(╯︵╰,)",
                 "tired": "(－_－) zzZ",
                 "angry": "ヽ( `д´*)ノ"
-            }.get(self.selected_mood, "")  
+            }.get(self.selectedMood, "")  
 
-            entry = f"{activity_text} (Energy: {energy_level}/10) {mood_emoji}\n"
+            entry = f"{activityText} (Energy: {energyLevel}/10) {moodEmoji}\n"
 
 
-            emoji_label = QtWidgets.QLabel()
-            if hasattr(self, 'selected_emoji'):
-                self.selected_emoji = None
+            emojiLabel = QtWidgets.QLabel()
+            if hasattr(self, 'selectedEmoji'):
+                self.selectedEmoji = None
 
                 # Create an entry widget with emoji and text
-                entry_widget = QtWidgets.QWidget()
-                entry_layout = QHBoxLayout(entry_widget)
-                entry_layout.addWidget(QtWidgets.QLabel(entry))  # Activity text
-                entry_layout.addWidget(emoji_label)  # Add emoji
-                entry_layout.addStretch()
-                entry_layout.setContentsMargins(0, 0, 0, 0)
+                entryWidget = QtWidgets.QWidget()
+                entryLayout = QHBoxLayout(entryWidget)
+                entryLayout.addWidget(QtWidgets.QLabel(entry))  # Activity text
+                entryLayout.addWidget(emojiLabel)  # Add emoji
+                entryLayout.addStretch()
+                entryLayout.setContentsMargins(0, 0, 0, 0)
 
             try:
                 # Get refenrece to Firestore
-                doc_ref = db.collection("calendar_entries").document(selected_date)
-                existing_data = doc_ref.get().to_dict() or {"diary": "", "activities": ""}
+                doc_ref = db.collection("calendar_entries").document(selectedDate)
+                existingData = doc_ref.get().to_dict() or {"diary": "", "activities": ""}
 
                 # Add activity
-                updated_activities = (existing_data.get("activities", "") + "\n" + entry).strip()
+                updatedActivities = (existingData.get("activities", "") + "\n" + entry).strip()
 
                 # Update Firestore
                 doc_ref.set({
-                    "diary": existing_data["diary"],  
-                    "activities": updated_activities
+                    "diary": existingData["diary"],  
+                    "activities": updatedActivities
                 })
 
-                self.activitiesTextbox.setPlainText(updated_activities)  # Update GUI
-                self.dialog.close()  # Close activity window
+                self.activitiesTextbox.setPlainText(updatedActivities)  # Update GUI
+                self.ActivityDialog.close()  # Close activity window
 
-                print(f"Activity saved for {selected_date}")  # Debugging
+                print(f"Activity saved for {selectedDate}")  # Debugging
 
             except Exception as e:
                 print(f"Failed to save activity: {e}")  # Debugging
 
     # Get data from Firebase
     def updateTextFields(self):
-        selected_date = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
+        selectedDate = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
 
         try:
-            doc_ref = db.collection("calendar_entries").document(selected_date)
+            doc_ref = db.collection("calendar_entries").document(selectedDate)
             data = doc_ref.get().to_dict()
 
             if data:
