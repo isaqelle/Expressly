@@ -154,7 +154,7 @@ class Ui_Form(object):
 # ------------------------------
 
     def openActivityWindow(self):
-        self.ActivityDialog = QtWidgets.Dialog()
+        self.ActivityDialog = QtWidgets.QDialog()
         self.ActivityDialog.setWindowTitle("New Activity")
         self.ActivityDialog.setFixedSize(450, 600)
         self.ActivityDialog.setStyleSheet("background-color: rgb(232, 228, 214);")
