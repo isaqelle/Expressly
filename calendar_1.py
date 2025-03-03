@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPainter, QColor, QFont, QPixmap, QIcon
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QHBoxLayout, QVBoxLayout
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy
+from PyQt5.QtCore import QSettings
 import requests
 
 # Some debugging code, checking the current working directory and verifying that "serviceAccountKey.json" existis
@@ -85,21 +86,6 @@ if not firebase_admin._apps:
 
 db = firestore.client() 
 
-# Authenticate as an anonymous user
-def get_anonymous_token():
-    API_KEY = "AIzaSyAT-jTtpqOeqJntmwcyFEUBb7YRQmA46rU"
-    url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={API_KEY}"
-    response = requests.post(url, json={})
-    if response.status_code == 200:
-        token = response.json()["idToken"]
-        print("✅ Anonymous user signed in successfully.")
-        return token
-    else:
-        print("❌ Failed to authenticate:", response.json())
-        return None
-
-# Get authentication token
-id_token = get_anonymous_token()
 
 # ------------------------------
 # SECTION: Calender Window
