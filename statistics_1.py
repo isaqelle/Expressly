@@ -2,7 +2,7 @@ import os
 import sys
 import re
 from PyQt5 import QtCore, QtGui, QtWidgets
-from pyqtgraph import PlotWidget
+from pyqtgraph import PlotWidget, LegendItem
 
 # Some debugging code, checking the current working directory and verifying that "serviceAccountKey.json" exists
 print("Current working directory:", os.getcwd())
@@ -165,14 +165,35 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
 
         # Show grid for a typical line chart appearance
         self.plotItem.showGrid(x=True, y=True, alpha=0.3)
-        
-        # Display axes
+
+        # ------------------------------
+        # SECTION: Adjust Axis Text Size
+        # Increasing text size for better visibility
+        # ------------------------------
+        font = QtGui.QFont()
+        font.setPointSize(12)  # Increase font size for axes labels
+
+        # Display axes (ensuring they are visible)
         self.plotItem.showAxis('bottom')
         self.plotItem.showAxis('left')
 
-        # Set labels for the axes
-        self.plotItem.setLabel('left', 'Energy')
-        self.plotItem.setLabel('bottom', 'X-Axis')
+        # Retrieve axis objects before applying styles
+        bottomAxis = self.plotItem.getAxis('bottom')
+        leftAxis = self.plotItem.getAxis('left')
+
+        # Set text size for axes labels
+        if bottomAxis:
+            bottomAxis.setStyle(tickFont=font)  # Adjust X-axis font size
+
+        if leftAxis:
+            leftAxis.setStyle(tickFont=font)  # Adjust Y-axis font size
+
+        # ------------------------------
+        # SECTION: Axis Labels
+        # Setting labels for the axes
+        # ------------------------------
+        self.plotItem.setLabel('left', '\n')
+        self.plotItem.setLabel('bottom', '\n')
 
         # Lock axes range to 0-10
         self.plotItem.setXRange(0, 10)
@@ -180,6 +201,9 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
 
         # Add a legend to differentiate the lines
         self.plotItem.addLegend()
+        self.plotItem.legend.setFont(font)  # Increase legend text size
+
+    
 
         # ------------------------------
         # SECTION: Custom X-Axis Ticks
@@ -193,8 +217,9 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
             (8, "happy"),
             (10, "veryhappy")
         ]
-        bottomAxis = self.plotItem.getAxis('bottom')
-        bottomAxis.setTicks([customTicks])
+        if bottomAxis:
+            bottomAxis.setTicks([customTicks])
+
 
     # ------------------------------
     # SECTION: Update Trends Function
@@ -229,14 +254,14 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
             moodVal = MOOD_MAP.get(moodStr, 0)
             moodValues.append(moodVal)
 
-        # Create a thin pen for the energy line (using the green color from the calendar header)
+        # Create a pen for the energy line (using the green color from the calendar header)
         energyPen = QtGui.QPen(QtGui.QColor("#8caa9a"))
-        energyPen.setWidth(1)
+        energyPen.setWidth(3)
         energyPen.setCosmetic(True)  # Ensures the pen width remains 1 pixel regardless of scaling
 
-        # Create a thin pen for the mood line (brown), 1 pixel wide, cosmetic
+        # Create a pen for the mood line (brown), 1 pixel wide, cosmetic
         moodPen = QtGui.QPen(QtGui.QColor(139, 69, 19))
-        moodPen.setWidth(1)
+        moodPen.setWidth(3)
         moodPen.setCosmetic(True)
 
         # Plot the energy line without symbols or fill (clean, pencil-like stroke)
