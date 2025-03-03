@@ -37,3 +37,4 @@
 firebase-admin==6.2.0
 PyQt5==5.15.11
 requests==2.31.0
+pyqtgraph==0.13.1
