@@ -7,7 +7,6 @@ from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QHBoxLayout, QVBoxLayout
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy
 from PyQt5.QtCore import QSettings
-import requests
 
 # Some debugging code, checking the current working directory and verifying that "serviceAccountKey.json" existis
 print("Current working directory:", os.getcwd())
