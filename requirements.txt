@@ -1,0 +1,40 @@
+# requirements.txt - Lista över Python-paket för Expressly Desktop
+# ------------------------------------------------------------
+# Denna fil innehåller alla Python-paket som används i projektet.
+# Genom att använda denna fil säkerställer vi att alla i teamet
+# har samma versioner av paketen och undviker kompatibilitetsproblem.
+#
+# 📌 INSTALLERA PAKET FRÅN FILEN:
+# 1. Se till att Python och pip är installerade på din dator.
+# 2. Klona eller ladda ner projektet från GitHub:
+#    git clone <repository-URL>
+#    cd <projektmapp>
+# 3. Installera alla listade paket genom att köra:
+#    pip install -r requirements.txt
+#
+# 📌 UPPDATERA PAKET EFTER ATT HA HÄMTAT NY KOD FRÅN GITHUB:
+# Om du redan har projektet men vill uppdatera paketen:
+# 1. Hämta den senaste versionen av projektet:
+#    git pull origin main
+# 2. Installera eller uppdatera paketen med:
+#    pip install -r requirements.txt
+#
+# 📌 LÄGGA TILL NYA PAKET:
+# 1. Installera paketet lokalt:
+#    pip install <paketnamn>
+# 2. Uppdatera denna fil med alla installerade paket:
+#    pip freeze > requirements.txt
+# 3. Lägg till och pusha ändringen till GitHub:
+#    git add requirements.txt
+#    git commit -m "Lagt till <paketnamn> i requirements.txt"
+#    git push origin main
+#
+# När någon hämtar den senaste koden och kör:
+# pip install -r requirements.txt
+# kommer de automatiskt få de nya paketen installerade.
+# ------------------------------------------------------------
+
+firebase-admin==6.2.0
+PyQt5==5.15.11
+requests==2.31.0
+pyqtgraph==0.13.1
