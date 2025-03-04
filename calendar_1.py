@@ -6,11 +6,18 @@ from PyQt5.QtGui import QPainter, QColor, QFont, QPixmap, QIcon
 from PyQt5.QtCore import Qt, QDate
 from PyQt5.QtWidgets import QApplication, QPushButton, QWidget, QHBoxLayout, QVBoxLayout
 from PyQt5.QtWidgets import QSpacerItem, QSizePolicy
+from PyQt5.QtCore import QSettings
 
 # Some debugging code, checking the current working directory and verifying that "serviceAccountKey.json" existis
 print("Current working directory:", os.getcwd())
 print("Checking if serviceAccountKey.json exists:", os.path.isfile("serviceAccountKey.json"))
 
+# ------------------------------
+# SECTION: User ID
+# Finds user ID from the settings file
+# ------------------------------
+settings = QSettings("\HKEY_CURRENT_USER\Software\Expressly\Expressly", QSettings.NativeFormat)
+UserId = settings.value("uid")
 
 # ------------------------------
 # SECTION: Battery Widget
@@ -83,6 +90,7 @@ if not firebase_admin._apps:
     firebase_admin.initialize_app(cred)
 
 db = firestore.client() 
+
 
 # ------------------------------
 # SECTION: Calender Window
@@ -242,7 +250,7 @@ class Ui_Form(object):
 
         try:
             # Get reference to Firestore
-            docRef = db.collection("calendar_entries").document(selectedDate)
+            docRef = db.collection("users").document(UserId).collection("calendar_entries").document(selectedDate)
 
             # Save whats in GUI to firestore
             data = {
@@ -292,7 +300,7 @@ class Ui_Form(object):
 
             try:
                 # Get refenrece to Firestore
-                doc_ref = db.collection("calendar_entries").document(selectedDate)
+                doc_ref = db.collection("users").document(UserId).collection("calendar_entries").document(selectedDate)
                 existingData = doc_ref.get().to_dict() or {"diary": "", "activities": ""}
 
                 # Add activity
@@ -317,7 +325,7 @@ class Ui_Form(object):
         selectedDate = self.calendarWidget.selectedDate().toString(QtCore.Qt.ISODate)
 
         try:
-            doc_ref = db.collection("calendar_entries").document(selectedDate)
+            doc_ref = db.collection("users").document(UserId).collection("calendar_entries").document(selectedDate)
             data = doc_ref.get().to_dict()
 
             if data:

@@ -1,5 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+import requests
 from audio import AudioPlayer
+from PyQt5.QtCore import QSettings
 from calendar_1 import Ui_Form
 
 
@@ -246,6 +248,39 @@ class uiMainWindow(object):
         self.ui = Ui_Form()  
         self.ui.setupUi(self.calendarWindow)
         self.calendarWindow.show()
+
+
+# Authenticate as an anonymous user
+def getUserId():    
+    # Initialize QSettings
+    settings = QSettings("Expressly", "Expressly")
+
+    savedUid = settings.value("uid")
+    #Check if user id exists
+    if savedUid:
+        print("✅ User id found")
+        print(settings.fileName())
+        return savedUid
+        
+    else:
+        #Create new user id and save it in settings
+        print("No existing user id found, creating new user id")
+        APIKEY = "AIzaSyAT-jTtpqOeqJntmwcyFEUBb7YRQmA46rU"
+        url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={APIKEY}"
+        response = requests.post(url, json={})
+
+        #Check if the response is successful
+        if response.status_code == 200:
+            token = response.json()["idToken"]
+            print("✅ Anonymous user signed in successfully.")
+            settings.setValue("uid", token)
+            return token
+        else:
+            print("❌ Failed to authenticate:", response.json())
+            return None
+
+# Get user id
+userId = getUserId()
 
 
 # Entry point, starts the program
