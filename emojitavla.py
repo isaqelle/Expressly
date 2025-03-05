@@ -164,7 +164,7 @@ class uiMainWindow(object):
         self.calendarWindow.show()
 
 
-<<<<<<< HEAD
+
 # Authenticate as an anonymous user
 def getUserId():    
     # Initialize QSettings
@@ -199,11 +199,6 @@ userId = getUserId()
 
 
 # Entry point, starts the program
-=======
-# ------------------------------
-# SECTION: Run the program
-# ------------------------------
->>>>>>> jessie
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
