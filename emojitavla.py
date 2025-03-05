@@ -3,184 +3,95 @@ import requests
 from audio import AudioPlayer
 from PyQt5.QtCore import QSettings
 from calendar_1 import Ui_Form
-
+from statistics_1 import TrendOverviewWindow, getTrendDataFromFirebase
 
 # ------------------------------
 # SECTION: MainWindow
 # ------------------------------
 class uiMainWindow(object):
     def setupUi(self, MainWindow):
+        """ Sets up the main window UI """
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(500, 400)
         MainWindow.setMaximumSize(QtCore.QSize(500, 400))
         MainWindow.setStyleSheet("QMainWindow {\n"
-"    background-color: rgb(185, 217, 186);\n"
-"}\n"
-"")
-        
+                                 "    background-color: rgb(185, 217, 186);\n"
+                                 "}\n"
+                                 "")
+
         self.audioPlayer = AudioPlayer()
         MainWindow.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setStyleSheet("")
         self.centralwidget.setObjectName("centralwidget")
 
-# ------------------------------
-# SECTION: Emoji Table
-# ------------------------------
-
+        # ------------------------------
+        # SECTION: Emoji Table 
+        # ------------------------------
         self.emojiTable = QtWidgets.QFrame(self.centralwidget)
         self.emojiTable.setGeometry(QtCore.QRect(280, 60, 161, 241))
-        self.emojiTable.setTabletTracking(False)
-        self.emojiTable.setToolTipDuration(-2)
-        self.emojiTable.setAutoFillBackground(False)
         self.emojiTable.setStyleSheet("QFrame {\n"
-"background-color: rgb(232, 228, 214);\n"
-"border: 2px solid black;\n"
-"border-radius: 10px; \n"
-"}\n"
-"")
+                                      "background-color: rgb(232, 228, 214);\n"
+                                      "border: 2px solid black;\n"
+                                      "border-radius: 10px;\n"
+                                      "}")
         self.emojiTable.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.emojiTable.setFrameShadow(QtWidgets.QFrame.Raised)
         self.emojiTable.setObjectName("emojiTable")
+
         self.gridLayout = QtWidgets.QGridLayout(self.emojiTable)
-        self.gridLayout.setObjectName("gridLayout")
+        self.gridLayout.setContentsMargins(5, 5, 5, 5)
+        self.gridLayout.setSpacing(10)
 
-# ------------------------------
-# SECTION: Emoji "Very happy"
-# ------------------------------
+        emoji_icons = {
+            "veryHappy": "bilder/grinning-face-with-big-eyes_1f603.png",
+            "happy": "bilder/slightly-smiling-face_1f642.png",
+            "sad": "bilder/crying-face_1f622.png",
+            "neutral": "bilder/neutral-face_1f610.png",
+            "angry": "bilder/pouting-face_1f621.png",
+            "tired": "bilder/sleeping-face_1f634.png"
+        }
 
-        self.veryHappyEmoji = QtWidgets.QPushButton(self.emojiTable)
-        self.veryHappyEmoji.setText("")
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("bilder/grinning-face-with-big-eyes_1f603.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.veryHappyEmoji.setIcon(icon)
-        self.veryHappyEmoji.setIconSize(QtCore.QSize(55, 55))
-        self.veryHappyEmoji.setAutoRepeat(False)
-        self.veryHappyEmoji.setAutoRepeatDelay(297)
-        self.veryHappyEmoji.setFlat(True)
-        self.veryHappyEmoji.setObjectName("veryHappyEmoji")
-        self.gridLayout.addWidget(self.veryHappyEmoji, 0, 0, 1, 1)
-        #import Very happyEmoji sound
-        self.veryHappyEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/VeryHappy.mp3"))
-        
-# ------------------------------
-# SECTION: Emoji "Happy"
-# ------------------------------
+        emoji_sounds = {
+            "veryHappy": "audio_filer/VeryHappy.mp3",
+            "happy": "audio_filer/Happy.mp3",
+            "sad": "audio_filer/Sad.mp3",
+            "neutral": "audio_filer/Neutral.mp3",
+            "angry": "audio_filer/Angry.mp3",
+            "tired": "audio_filer/Tired.mp3"
+        }
 
-        self.happyEmoji = QtWidgets.QPushButton(self.emojiTable)
-        self.happyEmoji.setText("")
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("bilder/slightly-smiling-face_1f642.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.happyEmoji.setIcon(icon1)
-        self.happyEmoji.setIconSize(QtCore.QSize(55, 55))
-        self.happyEmoji.setAutoRepeat(False)
-        self.happyEmoji.setAutoRepeatDelay(299)
-        self.happyEmoji.setFlat(True)
-        self.happyEmoji.setObjectName("happyEmoji")
-        self.gridLayout.addWidget(self.happyEmoji, 0, 1, 1, 1)
-        #import happyEmoji sound
-        self.happyEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/Happy.mp3"))
+        emoji_positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
+        emoji_keys = list(emoji_icons.keys())
 
-# ------------------------------
-# SECTION: Emoji "Sad"
-# ------------------------------
+        self.emojiButtons = {}
+        for i, key in enumerate(emoji_keys):
+            self.emojiButtons[key] = QtWidgets.QPushButton(self.emojiTable)
+            self.emojiButtons[key].setText("")
+            icon = QtGui.QIcon()
+            icon.addPixmap(QtGui.QPixmap(emoji_icons[key]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.emojiButtons[key].setIcon(icon)
+            self.emojiButtons[key].setIconSize(QtCore.QSize(55, 55))
+            self.emojiButtons[key].setFixedSize(60, 60)
+            self.emojiButtons[key].setFlat(True)
+            self.emojiButtons[key].setObjectName(key)
+            self.gridLayout.addWidget(self.emojiButtons[key], *emoji_positions[i])
 
-        self.sadEmoji = QtWidgets.QPushButton(self.emojiTable)
-        self.sadEmoji.setText("")
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap("bilder/crying-face_1f622.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.sadEmoji.setIcon(icon2)
-        self.sadEmoji.setIconSize(QtCore.QSize(55, 55))
-        self.sadEmoji.setAutoRepeat(False)
-        self.sadEmoji.setAutoRepeatDelay(298)
-        self.sadEmoji.setFlat(True)
-        self.sadEmoji.setObjectName("sadEmoji")
-        self.gridLayout.addWidget(self.sadEmoji, 1, 0, 1, 1)
-        #import sadEmoji sound
-        self.sadEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/Sad.mp3"))
+            self.emojiButtons[key].clicked.connect(lambda _, sound=emoji_sounds[key]: self.audioPlayer.playSound(sound))
 
-# ------------------------------
-# SECTION: Emoji "Neutral"
-# ------------------------------
-
-        self.neutralEmoji = QtWidgets.QPushButton(self.emojiTable)
-        self.neutralEmoji.setText("")
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap("bilder/neutral-face_1f610.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.neutralEmoji.setIcon(icon3)
-        self.neutralEmoji.setIconSize(QtCore.QSize(55, 55))
-        self.neutralEmoji.setAutoRepeat(False)
-        self.neutralEmoji.setAutoRepeatDelay(299)
-        self.neutralEmoji.setFlat(True)
-        self.neutralEmoji.setObjectName("neutral")
-        self.gridLayout.addWidget(self.neutralEmoji, 1, 1, 1, 1)
-        #import neutral sound
-        self.neutralEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/Neutral.mp3"))
-
-# ------------------------------
-# SECTION: Emoji "Angry"
-# ------------------------------
-
-        self.angryEmoji = QtWidgets.QPushButton(self.emojiTable)
-        self.angryEmoji.setText("")
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap("bilder/pouting-face_1f621.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.angryEmoji.setIcon(icon4)
-        self.angryEmoji.setIconSize(QtCore.QSize(55, 55))
-        self.angryEmoji.setAutoRepeat(False)
-        self.angryEmoji.setAutoRepeatDelay(299)
-        self.angryEmoji.setFlat(True)
-        self.angryEmoji.setObjectName("Angry")
-        self.gridLayout.addWidget(self.angryEmoji, 2, 0, 1, 1)
-        self.angryEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/Angry.mp3"))
-
-# ------------------------------
-# SECTION: Emoji "Tired"
-# ------------------------------
-
-        self.tiredEmoji = QtWidgets.QPushButton(self.emojiTable)
-        self.tiredEmoji.setText("")
-        icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap("bilder/sleeping-face_1f634.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.tiredEmoji.setIcon(icon5)
-        self.tiredEmoji.setIconSize(QtCore.QSize(55, 55))
-        self.tiredEmoji.setAutoRepeat(False)
-        self.tiredEmoji.setAutoRepeatDelay(299)
-        self.tiredEmoji.setFlat(True)
-        self.tiredEmoji.setObjectName("tired")
-        self.gridLayout.addWidget(self.tiredEmoji, 2, 1, 1, 1)
-        #import tired sound
-        self.tiredEmoji.clicked.connect(lambda: self.audioPlayer.playSound("audio_filer/Tired.mp3"))
-
-# ------------------------------
-# SECTION: Today
-# ------------------------------
-
+        # ------------------------------
+        # SECTION: "Today" button
+        # ------------------------------
         self.TodaysCalander = QtWidgets.QFrame(self.centralwidget)
         self.TodaysCalander.setGeometry(QtCore.QRect(70, 60, 121, 111))
-        self.TodaysCalander.setAutoFillBackground(False)
         self.TodaysCalander.setStyleSheet("QFrame {\n"
-"background-color: rgb(232, 228, 214);\n"
-"border: 2px solid black;\n"
-"border-radius: 10px; \n"
-"}\n"
-"QFrame {\n"
-"background-color: rgb(232, 228, 214);\n"
-"border: 2px solid black;\n"
-"border-radius: 10px; \n"
-"}\n"
-"")
-        self.TodaysCalander.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.TodaysCalander.setFrameShadow(QtWidgets.QFrame.Raised)
+                                          "background-color: rgb(232, 228, 214);\n"
+                                          "border: 2px solid black;\n"
+                                          "border-radius: 10px;\n"
+                                          "}")
         self.TodaysCalander.setObjectName("TodaysCalander")
-
-# ------------------------------
-# SECTION: "Today" button
-# ------------------------------
 
         self.todayButton = QtWidgets.QPushButton(self.TodaysCalander)
         self.todayButton.setGeometry(QtCore.QRect(20, 20, 81, 71))
-        self.todayButton.setFocusPolicy(QtCore.Qt.StrongFocus)
         self.todayButton.setText("")
         icon6 = QtGui.QIcon()
         icon6.addPixmap(QtGui.QPixmap("bilder/Today.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -188,32 +99,19 @@ class uiMainWindow(object):
         self.todayButton.setIconSize(QtCore.QSize(125, 50))
         self.todayButton.setFlat(True)
         self.todayButton.setObjectName("pushButton_8")
+        self.todayButton.clicked.connect(self.showTrends)
 
-# ------------------------------
-# SECTION: Calendar
-# ------------------------------
-
+        # ------------------------------
+        # SECTION: Calendar button
+        # ------------------------------
         self.Calander = QtWidgets.QFrame(self.centralwidget)
         self.Calander.setGeometry(QtCore.QRect(70, 190, 121, 111))
-        self.Calander.setAutoFillBackground(False)
         self.Calander.setStyleSheet("QFrame {\n"
-"background-color: rgb(232, 228, 214);\n"
-"border: 2px solid black;\n"
-"border-radius: 10px; \n"
-"}\n"
-"QFrame {\n"
-"background-color: rgb(232, 228, 214);\n"
-"border: 2px solid black;\n"
-"border-radius: 10px; \n"
-"}\n"
-"")
-        self.Calander.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.Calander.setFrameShadow(QtWidgets.QFrame.Raised)
+                                    "background-color: rgb(232, 228, 214);\n"
+                                    "border: 2px solid black;\n"
+                                    "border-radius: 10px;\n"
+                                    "}")
         self.Calander.setObjectName("Calander")
-
-# ------------------------------
-# SECTION: "Calendar" button
-# ------------------------------
 
         self.calendarButton = QtWidgets.QPushButton(self.Calander)
         self.calendarButton.setGeometry(QtCore.QRect(20, 20, 81, 71))
@@ -225,31 +123,48 @@ class uiMainWindow(object):
         self.calendarButton.setFlat(True)
         self.calendarButton.setObjectName("pushButton")
         self.calendarButton.clicked.connect(self.openCalendar)
+
+        # ------------------------------
+        # SECTION: Set the central widget
+        # ------------------------------
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 500, 18))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-# Set windowtitle on the main window
+    # ------------------------------
+    # SECTION: Set up translatable text
+    # ------------------------------
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle("Expressly")
-        
+        """ Sets the window title and any translatable text. """
+        _translate = QtCore.QCoreApplication.translate
+        MainWindow.setWindowTitle(_translate("MainWindow", "Expressly"))
 
-# Opens the calendar when clicked
+    # ------------------------------
+    # SECTION: Open the statistics window
+    # ------------------------------
+    def showTrends(self):
+        """ Opens the statistics window when the 'Today' button is clicked. """
+        try:
+            self.trendWindow = TrendOverviewWindow()
+            trendData = getTrendDataFromFirebase()  
+            self.trendWindow.updateTrends(trendData)
+            self.trendWindow.show()
+        except Exception as e:
+            print(f"Error opening statistics window: {e}")
+
+    # ------------------------------
+    # SECTION: Open the calendar
+    # ------------------------------
     def openCalendar(self):
+        """ Opens the calendar window """
         self.calendarWindow = QtWidgets.QMainWindow()
-        self.ui = Ui_Form()  
+        self.ui = Ui_Form()
         self.ui.setupUi(self.calendarWindow)
         self.calendarWindow.show()
 
 
+<<<<<<< HEAD
 # Authenticate as an anonymous user
 def getUserId():    
     # Initialize QSettings
@@ -284,6 +199,11 @@ userId = getUserId()
 
 
 # Entry point, starts the program
+=======
+# ------------------------------
+# SECTION: Run the program
+# ------------------------------
+>>>>>>> jessie
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -292,3 +212,4 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
