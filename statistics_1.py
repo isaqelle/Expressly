@@ -16,7 +16,6 @@ print("Checking if serviceAccountKey.json exists:", os.path.isfile("serviceAccou
 # ------------------------------
 # SECTION: Global Constants and Mood Mapping
 # ------------------------------
-
 CALENDAR_BG_COLOR = "#e8e4d6"  # Light background color for the calendar
 
 # Maps kaomoji to mood strings
@@ -72,9 +71,6 @@ def parseActivityLine(line):
 def getTrendDataFromFirebase():
     """
     Retrieves saved mood and energy statistics from Firebase.
-    Returns:
-        A list of dictionaries containing:
-        [{"date": "YYYY-MM-DD", "energy": avgEnergy, "mood": avgMoodStr}, ...]
     """
     if not firebase_admin._apps:
         cred = credentials.Certificate("serviceAccountKey.json")
@@ -99,18 +95,16 @@ def getTrendDataFromFirebase():
             numericMood = MOOD_MAP.get(moodKao.lower(), 0)
             moodNumbers.append(numericMood)
 
-        # Calculate daily averages
         avgEnergy = sum(energies) / len(energies) if energies else 0
         avgMoodNum = sum(moodNumbers) / len(moodNumbers) if moodNumbers else 0
 
-        # Round mood to the closest valid mood level
         validLevels = [0, 2, 4, 6, 8, 10]
         bestMatch = min(validLevels, key=lambda x: abs(x - avgMoodNum))
         moodStr = next((k for k, v in MOOD_MAP.items() if v == bestMatch), "angry")
 
         dataList.append({"date": dateStr, "energy": avgEnergy, "mood": moodStr})
 
-    dataList.sort(key=lambda x: x["date"])  # Ensure chronological order
+    dataList.sort(key=lambda x: x["date"])
     return dataList
 
 # ------------------------------
@@ -122,53 +116,33 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
         super(TrendOverviewWindow, self).__init__(parent)
         self.setWindowTitle("Trend Overview")
         self.setFixedSize(800, 600)
-
         self.setStyleSheet(f"background-color: {CALENDAR_BG_COLOR};")
 
-        # Create frame for the graph
-        self.frame = QtWidgets.QFrame(self)
-        self.frame.setGeometry(QtCore.QRect(0, 0, 800, 600))
-        self.frame.setStyleSheet(f"""
-            QFrame {{
-                background-color: {CALENDAR_BG_COLOR};
-                border: 2px solid black;
-                border-radius: 10px;
-            }}
-        """)
-
         # Create graph widget
-        self.graphWidget = PlotWidget(self.frame)
+        self.graphWidget = PlotWidget(self)
         self.graphWidget.setGeometry(QtCore.QRect(10, 10, 780, 580))
         self.graphWidget.setBackground(CALENDAR_BG_COLOR)
 
         self.plotItem = self.graphWidget.getPlotItem()
         self.plotItem.clear()
         self.plotItem.showGrid(x=True, y=True, alpha=0.3)
-
-        # Enable only horizontal scrolling
         self.plotItem.setMouseEnabled(x=True, y=False)
 
-        # Adjust font for better readability
         font = QtGui.QFont()
         font.setPointSize(12)
-        self.plotItem.showAxis('bottom')
-        self.plotItem.showAxis('left')
-
-        bottomAxis = self.plotItem.getAxis('bottom')
-        leftAxis = self.plotItem.getAxis('left')
-
-        if bottomAxis:
-            bottomAxis.setStyle(tickFont=font)
-        if leftAxis:
-            leftAxis.setStyle(tickFont=font)
-
+        self.plotItem.setLabel('left', 'Energy & Mood')
+        self.plotItem.setLabel('bottom', 'Date')
         self.plotItem.addLegend()
-        self.plotItem.legend.setFont(font)
+
+        # Custom Y-axis labels for moods
+        yTicks = [(v, f"{v}\n{k.capitalize()}") for k, v in MOOD_MAP.items()]
+        leftAxis = self.plotItem.getAxis('left')
+        leftAxis.setTicks([yTicks])
 
     def updateTrends(self, dataList):
         """
         Updates the trend graph with Firebase data.
-        Ensures correct formatting and allows scrolling through dates.
+        Ensures only valid date entries are processed.
         """
         self.plotItem.clear()
 
@@ -176,14 +150,14 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
             print("No data found.")
             return
 
-        # Filter out invalid document IDs
+        # Filter out invalid document IDs that are not in the expected YYYY-MM-DD format
         validData = []
         for item in dataList:
             try:
-                datetime.strptime(item["date"], "%Y-%m-%d")
+                datetime.strptime(item["date"], "%Y-%m-%d")  # Validate date format
                 validData.append(item)
             except ValueError:
-                print(f"Skipping invalid document: {item['date']}")
+                print(f"Skipping invalid document: {item['date']}")  # Debugging
 
         if not validData:
             print("No valid dates found in Firebase.")
@@ -221,7 +195,6 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
         # Ensure smooth scrolling instead of zooming
         self.plotItem.setXRange(0, len(formattedDates) - 1, padding=0)
         self.plotItem.getViewBox().setLimits(xMin=0, xMax=len(formattedDates) - 1)
-
 # ------------------------------
 # SECTION: Main Function
 # ------------------------------
@@ -229,13 +202,10 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
 def main():
     app = QtWidgets.QApplication(sys.argv)
     window = TrendOverviewWindow()
-
     trendData = getTrendDataFromFirebase()
-
     window.updateTrends(trendData)
     window.show()
     sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()
-
