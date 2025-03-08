@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 from PyQt5 import QtCore, QtGui, QtWidgets
 from pyqtgraph import PlotWidget
+from PyQt5.QtCore import QSettings
 
 # Firebase imports
 import firebase_admin
@@ -12,6 +13,13 @@ from firebase_admin import credentials, firestore
 # Debugging
 print("Current working directory:", os.getcwd())
 print("Checking if serviceAccountKey.json exists:", os.path.isfile("serviceAccountKey.json"))
+
+# ------------------------------
+# SECTION: User ID
+# Finds user ID from the settings file
+# ------------------------------
+settings = QSettings("\HKEY_CURRENT_USER\Software\Expressly\Expressly", QSettings.NativeFormat)
+UserId = settings.value("uid")
 
 # ------------------------------
 # SECTION: Global Constants and Mood Mapping
@@ -78,7 +86,7 @@ def getTrendDataFromFirebase():
     db = firestore.client()
 
     dataList = []
-    docs = db.collection("calendar_entries").stream()
+    docs = db.collection("users").document(UserId).collection("calendar_entries").stream()
 
     for doc in docs:
         dateStr = doc.id  # Document ID as date (e.g., "2025-03-02")
