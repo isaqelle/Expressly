@@ -147,6 +147,9 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
         leftAxis = self.plotItem.getAxis('left')
         leftAxis.setTicks([yTicks])
 
+        # Set the title at the top center of the graph
+        self.plotItem.setTitle("<h2>Trend Overview</h2>", color="black", size="14pt")
+
     def updateTrends(self, dataList):
         """
         Updates the trend graph with Firebase data.
