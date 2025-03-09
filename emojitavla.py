@@ -194,8 +194,9 @@ def getUserId():
             print("❌ Failed to authenticate:", response.json())
             return None
 
-# Get user id
+# Get user id and print it to the console
 userId = getUserId()
+print(userId)
 
 
 # Entry point, starts the program
