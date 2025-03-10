@@ -47,7 +47,7 @@ class TestMenu(unittest.TestCase):
     # ------------------------------------------------------------------
     def test_very_happy_emoji_click(self):
         self.ui.veryHappyEmoji.click()  # Simulate button click
-        self.ui.audioPlayer.playSound.assert_called_once_with("audio_files/VeryHappy.mp3")
+        self.ui.audioPlayer.playSound.assert_called_once_with("audioFiles/VeryHappy.mp3")
 
     # ------------------------------------------------------------------
     # Test that clicking the calendar button opens the calendar window.
