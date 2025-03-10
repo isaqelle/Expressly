@@ -71,7 +71,7 @@ class IntegrationTests(unittest.TestCase):
         
         # Verify that the playSound function was triggered
         self.assertTrue(self.audio_called, "Audio should have been triggered.")
-        self.assertEqual(self.called_file, "audio_filer/Happy.mp3", "Incorrect audio file called.")
+        self.assertEqual(self.called_file, "audio_files/Happy.mp3", "Incorrect audio file called.")
 
     # ------------------------------
     # TEST: Firebase Integration

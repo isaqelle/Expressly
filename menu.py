@@ -52,12 +52,12 @@ class uiMainWindow(object):
         }
 
         emoji_sounds = {
-            "veryHappy": "audio_filer/VeryHappy.mp3",
-            "happy": "audio_filer/Happy.mp3",
-            "sad": "audio_filer/Sad.mp3",
-            "neutral": "audio_filer/Neutral.mp3",
-            "angry": "audio_filer/Angry.mp3",
-            "tired": "audio_filer/Tired.mp3"
+            "veryHappy": "audio_files/VeryHappy.mp3",
+            "happy": "audio_files/Happy.mp3",
+            "sad": "audio_files/Sad.mp3",
+            "neutral": "audio_files/Neutral.mp3",
+            "angry": "audio_files/Angry.mp3",
+            "tired": "audio_files/Tired.mp3"
         }
 
         emoji_positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
