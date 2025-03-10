@@ -43,12 +43,12 @@ class uiMainWindow(object):
         self.gridLayout.setSpacing(10)
 
         emoji_icons = {
-            "veryHappy": "bilder/grinning-face-with-big-eyes_1f603.png",
-            "happy": "bilder/slightly-smiling-face_1f642.png",
-            "sad": "bilder/crying-face_1f622.png",
-            "neutral": "bilder/neutral-face_1f610.png",
-            "angry": "bilder/pouting-face_1f621.png",
-            "tired": "bilder/sleeping-face_1f634.png"
+            "veryHappy": "images/grinning-face-with-big-eyes_1f603.png",
+            "happy": "images/slightly-smiling-face_1f642.png",
+            "sad": "images/crying-face_1f622.png",
+            "neutral": "images/neutral-face_1f610.png",
+            "angry": "images/pouting-face_1f621.png",
+            "tired": "images/sleeping-face_1f634.png"
         }
 
         emoji_sounds = {
@@ -94,7 +94,7 @@ class uiMainWindow(object):
         self.todayButton.setGeometry(QtCore.QRect(30, 30, 120, 120))
         self.todayButton.setText("")
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap("bilder/Today.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon6.addPixmap(QtGui.QPixmap("images/Today.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.todayButton.setIcon(icon6)
         self.todayButton.setIconSize(QtCore.QSize(200, 100))
         self.todayButton.setFlat(True)
@@ -117,7 +117,7 @@ class uiMainWindow(object):
         self.calendarButton.setGeometry(QtCore.QRect(30, 30, 120, 120))
         self.calendarButton.setText("")
         icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap("bilder/Calendar.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon7.addPixmap(QtGui.QPixmap("images/Calendar.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.calendarButton.setIcon(icon7)
         self.calendarButton.setIconSize(QtCore.QSize(200, 100))
         self.calendarButton.setFlat(True)

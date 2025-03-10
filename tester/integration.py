@@ -6,7 +6,7 @@ from firebase_admin import credentials, firestore
 
 # ------------------------------
 # SECTION: Path Configuration
-# Short path fix: go one level up so we can import emojitavla.py
+# Short path fix: go one level up so we can import menu.py
 # ------------------------------
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
@@ -19,7 +19,7 @@ from PyQt5.QtCore import Qt
 # ------------------------------
 # SECTION: Import UI and Audio Player
 # ------------------------------
-from emojitavla import uiMainWindow  # Main UI with emojis, buttons, etc.
+from menu import uiMainWindow  # Main UI with emojis, buttons, etc.
 from audio import AudioPlayer  # AudioPlayer class
 
 # ------------------------------
