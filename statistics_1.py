@@ -90,22 +90,11 @@ def getTrendDataFromFirebase():
 
     dataList = []
         # Get the current week's Monday and Sunday
-    today = datetime.today()
-    start_of_week = today - timedelta(days=today.weekday())  # Monday of the current week
-    end_of_week = start_of_week + timedelta(days=6)  # Sunday of the current week
-    print(f"DEBUG: Today is {today}, Start of week: {start_of_week}, End of week: {end_of_week}")
 
     docs = db.collection("users").document(UserId).collection("calendar_entries").stream()
 
     for doc in docs:
         dateStr = doc.id  # Document ID as date (e.g., "2025-03-02")
-        try:
-            entry_date = datetime.strptime(dateStr, "%Y-%m-%d")
-            if not (start_of_week <= entry_date <= end_of_week):
-                continue  # Skip if not in the current week
-        except ValueError:
-            print(f"Skipping invalid document: {dateStr}")
-            continue
         docData = doc.to_dict()
         activitiesText = docData.get("activities", "")
         lines = activitiesText.splitlines()
