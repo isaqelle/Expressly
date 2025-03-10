@@ -21,7 +21,7 @@ print("Checking if serviceAccountKey.json exists:", os.path.isfile("serviceAccou
 # SECTION: User ID
 # Finds user ID from the settings file
 # ------------------------------
-settings = QSettings("\HKEY_CURRENT_USER\Software\Expressly\Expressly", QSettings.NativeFormat)
+settings = QSettings("HKEY_CURRENT_USER\\Software\\Expressly\\Expressly", QSettings.NativeFormat)
 UserId = settings.value("uid")
 
 # ------------------------------
