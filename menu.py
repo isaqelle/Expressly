@@ -12,8 +12,8 @@ class uiMainWindow(object):
     def setupUi(self, MainWindow):
         """ Sets up the main window UI """
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(500, 400)
-        MainWindow.setMaximumSize(QtCore.QSize(500, 400))
+        MainWindow.resize(800, 600)
+
         MainWindow.setStyleSheet("QMainWindow {\n"
                                  "    background-color: rgb(185, 217, 186);\n"
                                  "}\n"
@@ -28,7 +28,7 @@ class uiMainWindow(object):
         # SECTION: Emoji Table 
         # ------------------------------
         self.emojiTable = QtWidgets.QFrame(self.centralwidget)
-        self.emojiTable.setGeometry(QtCore.QRect(280, 60, 161, 241))
+        self.emojiTable.setGeometry(QtCore.QRect(400, 100, 280, 400)) #280 60 161 241
         self.emojiTable.setStyleSheet("QFrame {\n"
                                       "background-color: rgb(232, 228, 214);\n"
                                       "border: 2px solid black;\n"
@@ -43,21 +43,21 @@ class uiMainWindow(object):
         self.gridLayout.setSpacing(10)
 
         emoji_icons = {
-            "veryHappy": "bilder/grinning-face-with-big-eyes_1f603.png",
-            "happy": "bilder/slightly-smiling-face_1f642.png",
-            "sad": "bilder/crying-face_1f622.png",
-            "neutral": "bilder/neutral-face_1f610.png",
-            "angry": "bilder/pouting-face_1f621.png",
-            "tired": "bilder/sleeping-face_1f634.png"
+            "veryHappy": "images/grinning-face-with-big-eyes_1f603.png",
+            "happy": "images/slightly-smiling-face_1f642.png",
+            "sad": "images/crying-face_1f622.png",
+            "neutral": "images/neutral-face_1f610.png",
+            "angry": "images/pouting-face_1f621.png",
+            "tired": "images/sleeping-face_1f634.png"
         }
 
         emoji_sounds = {
-            "veryHappy": "audio_filer/VeryHappy.mp3",
-            "happy": "audio_filer/Happy.mp3",
-            "sad": "audio_filer/Sad.mp3",
-            "neutral": "audio_filer/Neutral.mp3",
-            "angry": "audio_filer/Angry.mp3",
-            "tired": "audio_filer/Tired.mp3"
+            "veryHappy": "audioFiles/VeryHappy.mp3",
+            "happy": "audioFiles/Happy.mp3",
+            "sad": "audioFiles/Sad.mp3",
+            "neutral": "audioFiles/Neutral.mp3",
+            "angry": "audioFiles/Angry.mp3",
+            "tired": "audioFiles/Tired.mp3"
         }
 
         emoji_positions = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1)]
@@ -70,8 +70,8 @@ class uiMainWindow(object):
             icon = QtGui.QIcon()
             icon.addPixmap(QtGui.QPixmap(emoji_icons[key]), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             self.emojiButtons[key].setIcon(icon)
-            self.emojiButtons[key].setIconSize(QtCore.QSize(55, 55))
-            self.emojiButtons[key].setFixedSize(60, 60)
+            self.emojiButtons[key].setIconSize(QtCore.QSize(75, 75))
+            self.emojiButtons[key].setFixedSize(100, 100)
             self.emojiButtons[key].setFlat(True)
             self.emojiButtons[key].setObjectName(key)
             self.gridLayout.addWidget(self.emojiButtons[key], *emoji_positions[i])
@@ -82,7 +82,7 @@ class uiMainWindow(object):
         # SECTION: "Today" button
         # ------------------------------
         self.TodaysCalander = QtWidgets.QFrame(self.centralwidget)
-        self.TodaysCalander.setGeometry(QtCore.QRect(70, 60, 121, 111))
+        self.TodaysCalander.setGeometry(QtCore.QRect(130, 100, 180, 180))#70, 60, 121, 111
         self.TodaysCalander.setStyleSheet("QFrame {\n"
                                           "background-color: rgb(232, 228, 214);\n"
                                           "border: 2px solid black;\n"
@@ -91,12 +91,12 @@ class uiMainWindow(object):
         self.TodaysCalander.setObjectName("TodaysCalander")
 
         self.todayButton = QtWidgets.QPushButton(self.TodaysCalander)
-        self.todayButton.setGeometry(QtCore.QRect(20, 20, 81, 71))
+        self.todayButton.setGeometry(QtCore.QRect(30, 30, 120, 120))
         self.todayButton.setText("")
         icon6 = QtGui.QIcon()
-        icon6.addPixmap(QtGui.QPixmap("bilder/Today.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon6.addPixmap(QtGui.QPixmap("images/Today.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.todayButton.setIcon(icon6)
-        self.todayButton.setIconSize(QtCore.QSize(125, 50))
+        self.todayButton.setIconSize(QtCore.QSize(200, 100))
         self.todayButton.setFlat(True)
         self.todayButton.setObjectName("pushButton_8")
         self.todayButton.clicked.connect(self.showTrends)
@@ -105,7 +105,7 @@ class uiMainWindow(object):
         # SECTION: Calendar button
         # ------------------------------
         self.Calander = QtWidgets.QFrame(self.centralwidget)
-        self.Calander.setGeometry(QtCore.QRect(70, 190, 121, 111))
+        self.Calander.setGeometry(QtCore.QRect(130, 320, 180, 180))#70, 190, 121, 111
         self.Calander.setStyleSheet("QFrame {\n"
                                     "background-color: rgb(232, 228, 214);\n"
                                     "border: 2px solid black;\n"
@@ -114,12 +114,12 @@ class uiMainWindow(object):
         self.Calander.setObjectName("Calander")
 
         self.calendarButton = QtWidgets.QPushButton(self.Calander)
-        self.calendarButton.setGeometry(QtCore.QRect(20, 20, 81, 71))
+        self.calendarButton.setGeometry(QtCore.QRect(30, 30, 120, 120))
         self.calendarButton.setText("")
         icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap("bilder/Calendar.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon7.addPixmap(QtGui.QPixmap("images/Calendar.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.calendarButton.setIcon(icon7)
-        self.calendarButton.setIconSize(QtCore.QSize(120, 50))
+        self.calendarButton.setIconSize(QtCore.QSize(200, 100))
         self.calendarButton.setFlat(True)
         self.calendarButton.setObjectName("pushButton")
         self.calendarButton.clicked.connect(self.openCalendar)
@@ -194,8 +194,9 @@ def getUserId():
             print("❌ Failed to authenticate:", response.json())
             return None
 
-# Get user id
+# Get user id and print it to the console
 userId = getUserId()
+print(userId)
 
 
 # Entry point, starts the program

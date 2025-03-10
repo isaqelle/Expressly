@@ -6,7 +6,7 @@ from firebase_admin import credentials, firestore
 
 # ------------------------------
 # SECTION: Path Configuration
-# Short path fix: go one level up so we can import emojitavla.py
+# Short path fix: go one level up so we can import menu.py
 # ------------------------------
 current_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(current_dir)
@@ -19,7 +19,7 @@ from PyQt5.QtCore import Qt
 # ------------------------------
 # SECTION: Import UI and Audio Player
 # ------------------------------
-from emojitavla import uiMainWindow  # Main UI with emojis, buttons, etc.
+from menu import uiMainWindow  # Main UI with emojis, buttons, etc.
 from audio import AudioPlayer  # AudioPlayer class
 
 # ------------------------------
@@ -71,7 +71,7 @@ class IntegrationTests(unittest.TestCase):
         
         # Verify that the playSound function was triggered
         self.assertTrue(self.audio_called, "Audio should have been triggered.")
-        self.assertEqual(self.called_file, "audio_filer/Happy.mp3", "Incorrect audio file called.")
+        self.assertEqual(self.called_file, "audioFiles/Happy.mp3", "Incorrect audio file called.")
 
     # ------------------------------
     # TEST: Firebase Integration
