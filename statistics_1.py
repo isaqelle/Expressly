@@ -219,9 +219,8 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
 
 
         # Ensure smooth scrolling instead of zooming
-        self.plotItem.setXRange(0, len(formattedDates) + 5, padding=0)
-        self.plotItem.getViewBox().setLimits(xMin=0, xMax=len(formattedDates) - 1) # restrict the viewable area
-
+        self.plotItem.setXRange(-1, len(formattedDates), padding=0.1)
+        self.plotItem.getViewBox().setLimits(xMin=-0.5, xMax=len(formattedDates) - 0.5)
 
         self.legend = LegendItem((100, 60), offset=(-10, 10))  # (width, height), (x-offset, y-offset)
         self.legend.setParentItem(self.plotItem)
