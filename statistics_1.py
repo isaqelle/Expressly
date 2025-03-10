@@ -33,10 +33,10 @@ CALENDAR_BG_COLOR = "#e8e4d6"  # Light background color for the calendar
 KAOMOJI_MOOD_MAP = {
     "(╯︵╰,)": "sad",
     "ヽ(ー_ー )ノ": "neutral",
-    "ヽ(◕‿◕｡)ノ": "very happy",
-    "(◕‿◕) ": "happy",
-    "(－_－) zzZ ": "tired",
-    "ヽ( д´*)ノ": "angry",
+    "ヽ(◕‿◕｡)ノ": "veryHappy",
+    "(◕‿◕)": "happy",
+    "(－_－) zzZ": "tired",
+    "ヽ( `д´*)ノ": "angry",
 }
 
 # Maps mood strings to numeric values (0-10)
