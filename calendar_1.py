@@ -16,7 +16,7 @@ print("Checking if serviceAccountKey.json exists:", os.path.isfile("serviceAccou
 # SECTION: User ID
 # Finds user ID from the settings file
 # ------------------------------
-settings = QSettings("\HKEY_CURRENT_USER\Software\Expressly\Expressly", QSettings.NativeFormat)
+settings = QSettings("HKEY_CURRENT_USER\\Software\\Expressly\\Expressly", QSettings.NativeFormat)
 UserId = settings.value("uid")
 
 # ------------------------------
@@ -102,6 +102,7 @@ class Ui_Form(object):
         Form.resize(800, 600)
         Form.setFixedSize(800, 600)
         Form.setStyleSheet("background-color: rgb(232, 228, 214);")
+        
 
         # Calendar Label ("CALENDAR" title)
         self.calendarLabel = QtWidgets.QLabel(Form)
@@ -110,12 +111,15 @@ class Ui_Form(object):
         self.calendarLabel.setAlignment(QtCore.Qt.AlignCenter)
         self.calendarLabel.setText("CALENDAR")
 
+        
+
         # Displays the calendar
         self.calendarWidget = QtWidgets.QCalendarWidget(Form)
         self.calendarWidget.setGeometry(30, 100, 350, 250)
         self.calendarWidget.setStyleSheet("background-color: rgb(211, 204, 186);")
         self.calendarWidget.selectionChanged.connect(self.updateTextFields)
-
+        
+        
         # Diary Label ("DIARY" title)
         self.diaryLabel = QtWidgets.QLabel(Form)
         self.diaryLabel.setGeometry(410, 100, 350, 30)
