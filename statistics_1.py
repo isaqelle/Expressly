@@ -33,10 +33,10 @@ CALENDAR_BG_COLOR = "#e8e4d6"  # Light background color for the calendar
 KAOMOJI_MOOD_MAP = {
     "(╯︵╰,)": "sad",
     "ヽ(ー_ー )ノ": "neutral",
-    "ヽ(◕‿◕｡)ノ": "very happy",
-    "(◕‿◕) ": "happy",
-    "(－_－) zzZ ": "tired",
-    "ヽ( д´*)ノ": "angry",
+    "ヽ(◕‿◕｡)ノ": "veryHappy",
+    "(◕‿◕)": "happy",
+    "(－_－) zzZ": "tired",
+    "ヽ( `д´*)ノ": "angry",
 }
 
 # Maps mood strings to numeric values (0-10)
@@ -90,22 +90,11 @@ def getTrendDataFromFirebase():
 
     dataList = []
         # Get the current week's Monday and Sunday
-    today = datetime.today()
-    start_of_week = today - timedelta(days=today.weekday())  # Monday of the current week
-    end_of_week = start_of_week + timedelta(days=6)  # Sunday of the current week
-    print(f"DEBUG: Today is {today}, Start of week: {start_of_week}, End of week: {end_of_week}")
 
     docs = db.collection("users").document(UserId).collection("calendar_entries").stream()
 
     for doc in docs:
         dateStr = doc.id  # Document ID as date (e.g., "2025-03-02")
-        try:
-            entry_date = datetime.strptime(dateStr, "%Y-%m-%d")
-            if not (start_of_week <= entry_date <= end_of_week):
-                continue  # Skip if not in the current week
-        except ValueError:
-            print(f"Skipping invalid document: {dateStr}")
-            continue
         docData = doc.to_dict()
         activitiesText = docData.get("activities", "")
         lines = activitiesText.splitlines()
@@ -219,9 +208,8 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
 
 
         # Ensure smooth scrolling instead of zooming
-        self.plotItem.setXRange(0, len(formattedDates) + 5, padding=0)
-        self.plotItem.getViewBox().setLimits(xMin=0, xMax=len(formattedDates) - 1) # restrict the viewable area
-
+        self.plotItem.setXRange(-1, len(formattedDates), padding=0.1)
+        self.plotItem.getViewBox().setLimits(xMin=-0.5, xMax=len(formattedDates) - 0.5)
 
         self.legend = LegendItem((100, 60), offset=(-10, 10))  # (width, height), (x-offset, y-offset)
         self.legend.setParentItem(self.plotItem)
