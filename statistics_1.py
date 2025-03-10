@@ -111,11 +111,10 @@ def getTrendDataFromFirebase():
         avgEnergy = sum(energies) / len(energies) if energies else 0
         avgMoodNum = sum(moodNumbers) / len(moodNumbers) if moodNumbers else 0
 
-        validLevels = [0, 2, 4, 6, 8, 10]
-        bestMatch = min(validLevels, key=lambda x: abs(x - avgMoodNum))
-        moodStr = next((k for k, v in MOOD_MAP.items() if v == bestMatch), "angry")
+        moodNum = round(avgMoodNum)
 
-        dataList.append({"date": dateStr, "energy": avgEnergy, "mood": moodStr})
+        dataList.append({"date": dateStr, "energy": avgEnergy, "mood": moodNum})  # moodNum istället för moodStr
+
 
     dataList.sort(key=lambda x: x["date"])
     return dataList
@@ -187,7 +186,8 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
 
         # Retrieve energy and mood values
         energyValues = [item["energy"] for item in validData]
-        moodValues = [MOOD_MAP.get(item["mood"].lower(), 0) for item in validData]
+        moodValues = [item["mood"] for item in validData]  # Behåller hela skalan 0-10
+
 
         # Create pens for the lines
         energyBars = BarGraphItem(x=xValues, height=energyValues, width=0.3, brush=QtGui.QColor("#8caa9a"))  # Green
