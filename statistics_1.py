@@ -49,7 +49,6 @@ MOOD_MAP = {
 # ------------------------------
 # SECTION: Data Parsing
 # ------------------------------
-
 def parseActivityLine(line):
     # Parses an activity line and extracts energy level and mood.
     energyVal = 0
@@ -68,7 +67,6 @@ def parseActivityLine(line):
 # ------------------------------
 # SECTION: Firebase Retrieval
 # ------------------------------
-
 def getTrendDataFromFirebase():
     # Retrieves saved mood and energy statistics from Firebase.
     if not firebase_admin._apps:
@@ -108,7 +106,6 @@ def getTrendDataFromFirebase():
 # ------------------------------
 # SECTION: Trend Overview Window
 # ------------------------------
-
 class TrendOverviewWindow(QtWidgets.QMainWindow):
     # Graphical window displaying energy and mood trends.
     def __init__(self, parent=None):
@@ -197,7 +194,6 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
 # ------------------------------
 # SECTION: Main Function
 # ------------------------------
-
 def main():
     app = QtWidgets.QApplication(sys.argv)
     window = TrendOverviewWindow()
