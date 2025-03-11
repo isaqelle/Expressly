@@ -79,27 +79,27 @@ class uiMainWindow(object):
             self.emojiButtons[key].clicked.connect(lambda _, sound=emoji_sounds[key]: self.audioPlayer.playSound(sound))
 
         # ------------------------------
-        # SECTION: "Today" button
+        # SECTION: "Statistics" button
         # ------------------------------
-        self.TodaysCalander = QtWidgets.QFrame(self.centralwidget)
-        self.TodaysCalander.setGeometry(QtCore.QRect(130, 100, 180, 180))#70, 60, 121, 111
-        self.TodaysCalander.setStyleSheet("QFrame {\n"
+        self.Statistics = QtWidgets.QFrame(self.centralwidget)
+        self.Statistics.setGeometry(QtCore.QRect(130, 100, 180, 180))#70, 60, 121, 111
+        self.Statistics.setStyleSheet("QFrame {\n"
                                           "background-color: rgb(232, 228, 214);\n"
                                           "border: 2px solid black;\n"
                                           "border-radius: 10px;\n"
                                           "}")
-        self.TodaysCalander.setObjectName("TodaysCalander")
+        self.Statistics.setObjectName("Statistics")
 
-        self.todayButton = QtWidgets.QPushButton(self.TodaysCalander)
-        self.todayButton.setGeometry(QtCore.QRect(30, 30, 120, 120))
-        self.todayButton.setText("")
+        self.StatisticsButton = QtWidgets.QPushButton(self.Statistics)
+        self.StatisticsButton.setGeometry(QtCore.QRect(30, 30, 120, 120))
+        self.StatisticsButton.setText("")
         icon6 = QtGui.QIcon()
         icon6.addPixmap(QtGui.QPixmap("images/Today.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.todayButton.setIcon(icon6)
-        self.todayButton.setIconSize(QtCore.QSize(200, 100))
-        self.todayButton.setFlat(True)
-        self.todayButton.setObjectName("pushButton_8")
-        self.todayButton.clicked.connect(self.showTrends)
+        self.StatisticsButton.setIcon(icon6)
+        self.StatisticsButton.setIconSize(QtCore.QSize(200, 100))
+        self.StatisticsButton.setFlat(True)
+        self.StatisticsButton.setObjectName("pushButtonStatistics")
+        self.StatisticsButton.clicked.connect(self.showTrends)
 
         # ------------------------------
         # SECTION: Calendar button
@@ -144,7 +144,7 @@ class uiMainWindow(object):
     # SECTION: Open the statistics window
     # ------------------------------
     def showTrends(self):
-        """ Opens the statistics window when the 'Today' button is clicked. """
+        """ Opens the statistics window when the 'Statistics' button is clicked. """
         try:
             self.trendWindow = TrendOverviewWindow()
             trendData = getTrendDataFromFirebase()  
