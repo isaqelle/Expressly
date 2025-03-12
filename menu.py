@@ -117,7 +117,7 @@ class uiMainWindow(object):
         self.calendarButton.setGeometry(QtCore.QRect(30, 30, 120, 120))
         self.calendarButton.setText("")
         icon7 = QtGui.QIcon()
-        icon7.addPixmap(QtGui.QPixmap("images/Calendar.jpg"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon7.addPixmap(QtGui.QPixmap("images/Calendar.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.calendarButton.setIcon(icon7)
         self.calendarButton.setIconSize(QtCore.QSize(200, 100))
         self.calendarButton.setFlat(True)
