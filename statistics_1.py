@@ -74,7 +74,6 @@ def getTrendDataFromFirebase():
         firebase_admin.initialize_app(cred)
     db = firestore.client()
 
-    # Get the current week's Monday and Sunday
     dataList = []  
     docs = db.collection("users").document(UserId).collection("calendar_entries").stream()
 
