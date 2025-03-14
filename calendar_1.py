@@ -190,8 +190,8 @@ class Ui_Form(object):
         # Horizontal layout for emoji images
         self.imageLayout = QHBoxLayout()
         self.emojiImagePaths = [
-            "bilder/grinning-face-with-big-eyes_1f603.png", "bilder/slightly-smiling-face_1f642.png", "bilder/neutral-face_1f610.png",
-            "bilder/crying-face_1f622.png", "bilder/sleeping-face_1f634.png", "bilder/pouting-face_1f621.png"
+            "images/grinning-face-with-big-eyes_1f603.png", "images/slightly-smiling-face_1f642.png", "images/neutral-face_1f610.png",
+            "images/crying-face_1f622.png", "images/sleeping-face_1f634.png", "images/pouting-face_1f621.png"
         ]
 
         self.emojiButtons = []

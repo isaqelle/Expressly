@@ -3,14 +3,14 @@ import unittest
 from unittest.mock import MagicMock
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication
-from emojitavla import uiMainWindow
+from menu import uiMainWindow
 from calendar_1 import Ui_Form
 
 # Run test
 # python -m unittest discover -s tester -p "*.py"
 # python -m unittest tester.test_ui
 
-class TestEmojiTavla(unittest.TestCase):
+class TestMenu(unittest.TestCase):
 
     # --------------------------------------------------------------
     # Set up the application and create the main window for testing.
@@ -47,7 +47,7 @@ class TestEmojiTavla(unittest.TestCase):
     # ------------------------------------------------------------------
     def test_very_happy_emoji_click(self):
         self.ui.veryHappyEmoji.click()  # Simulate button click
-        self.ui.audioPlayer.playSound.assert_called_once_with("audio_filer/VeryHappy.mp3")
+        self.ui.audioPlayer.playSound.assert_called_once_with("audioFiles/VeryHappy.mp3")
 
     # ------------------------------------------------------------------
     # Test that clicking the calendar button opens the calendar window.
