@@ -164,7 +164,7 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
 
         # Extracts values
         energyValues = [item["energy"] for item in validData]
-        moodValues = [item["mood"] for item in validData]  # Behåller hela skalan 0-10
+        moodValues = [item["mood"] for item in validData]  #Keep the whole scal 0-10
 
         # Create bars
         energyBars = BarGraphItem(x=xValues, height=energyValues, width=0.3, brush=QtGui.QColor("#8caa9a"))  # Green
