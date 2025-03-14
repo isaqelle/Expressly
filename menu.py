@@ -13,6 +13,7 @@ class uiMainWindow(object):
         """ Sets up the main window UI """
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
+        MainWindow.setFixedSize(800, 600)
 
         MainWindow.setStyleSheet("QMainWindow {\n"
                                  "    background-color: rgb(185, 217, 186);\n"
