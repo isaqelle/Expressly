@@ -3,17 +3,14 @@ import sys
 import re
 from datetime import datetime
 from PyQt5 import QtCore, QtGui, QtWidgets
-from pyqtgraph import PlotWidget
 from PyQt5.QtCore import QSettings
-from pyqtgraph import BarGraphItem
-from pyqtgraph import LegendItem
-from datetime import datetime, timedelta
-
-# Firebase imports
+from pyqtgraph import BarGraphItem, LegendItem, PlotWidget
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-# Debugging
+# ------------------------------
+# SECTION: Debugging & Setup
+# ------------------------------
 print("Current working directory:", os.getcwd())
 print("Checking if serviceAccountKey.json exists:", os.path.isfile("serviceAccountKey.json"))
 
@@ -29,7 +26,7 @@ UserId = settings.value("uid")
 # ------------------------------
 CALENDAR_BG_COLOR = "#e8e4d6"  # Light background color for the calendar
 
-# Maps kaomoji to mood strings
+# Kaomoji-to-mood mapping
 KAOMOJI_MOOD_MAP = {
     "(╯︵╰,)": "sad",
     "ヽ(ー_ー )ノ": "neutral",
@@ -39,7 +36,7 @@ KAOMOJI_MOOD_MAP = {
     "ヽ( `д´*)ノ": "angry",
 }
 
-# Maps mood strings to numeric values (0-10)
+# Mood-to-numeric mapping
 MOOD_MAP = {
     "veryhappy": 10,
     "happy": 8,
@@ -50,18 +47,10 @@ MOOD_MAP = {
 }
 
 # ------------------------------
-# SECTION: Parsing Activity Data
+# SECTION: Data Parsing
 # ------------------------------
-
 def parseActivityLine(line):
-    """
-    Parses a line like:
-      "School (Energy: 7/10) ヽ(ー_ー )ノ"
-    Extracts:
-      - Energy level (integer)
-      - Mood (as a string)
-    If the kaomoji is not recognized, defaults to "angry".
-    """
+    # Parses an activity line and extracts energy level and mood.
     energyVal = 0
     moodStr = "angry"
 
@@ -78,19 +67,14 @@ def parseActivityLine(line):
 # ------------------------------
 # SECTION: Firebase Retrieval
 # ------------------------------
-
 def getTrendDataFromFirebase():
-    """
-    Retrieves saved mood and energy statistics from Firebase.
-    """
+    # Retrieves saved mood and energy statistics from Firebase.
     if not firebase_admin._apps:
         cred = credentials.Certificate("serviceAccountKey.json")
         firebase_admin.initialize_app(cred)
     db = firestore.client()
 
-    dataList = []
-        # Get the current week's Monday and Sunday
-
+    dataList = []  
     docs = db.collection("users").document(UserId).collection("calendar_entries").stream()
 
     for doc in docs:
@@ -111,11 +95,9 @@ def getTrendDataFromFirebase():
         avgEnergy = sum(energies) / len(energies) if energies else 0
         avgMoodNum = sum(moodNumbers) / len(moodNumbers) if moodNumbers else 0
 
-        validLevels = [0, 2, 4, 6, 8, 10]
-        bestMatch = min(validLevels, key=lambda x: abs(x - avgMoodNum))
-        moodStr = next((k for k, v in MOOD_MAP.items() if v == bestMatch), "angry")
+        moodNum = round(avgMoodNum)
 
-        dataList.append({"date": dateStr, "energy": avgEnergy, "mood": moodStr})
+        dataList.append({"date": dateStr, "energy": avgEnergy, "mood": moodNum})  # moodNum istället för moodStr
 
     dataList.sort(key=lambda x: x["date"])
     return dataList
@@ -123,15 +105,14 @@ def getTrendDataFromFirebase():
 # ------------------------------
 # SECTION: Trend Overview Window
 # ------------------------------
-
 class TrendOverviewWindow(QtWidgets.QMainWindow):
+    # Graphical window displaying energy and mood trends.
     def __init__(self, parent=None):
         super(TrendOverviewWindow, self).__init__(parent)
         self.setWindowTitle("Trend Overview")
         self.setFixedSize(800, 600)
         self.setStyleSheet(f"background-color: {CALENDAR_BG_COLOR};")
 
-        # Create graph widget
         self.graphWidget = PlotWidget(self)
         self.graphWidget.setGeometry(QtCore.QRect(10, 10, 780, 580))
         self.graphWidget.setBackground(CALENDAR_BG_COLOR)
@@ -147,7 +128,7 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
         self.plotItem.setLabel('bottom', 'Date')
         self.plotItem.addLegend()
 
-        # Custom Y-axis labels for moods
+        # Custom Y-axis labels
         yTicks = [(v, f"{v}\n{k.capitalize()}") for k, v in MOOD_MAP.items()]
         leftAxis = self.plotItem.getAxis('left')
         leftAxis.setTicks([yTicks])
@@ -156,17 +137,13 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
         self.plotItem.setTitle("<h2>Trend Overview</h2>", color="black", size="14pt")
 
     def updateTrends(self, dataList):
-        """
-        Updates the trend graph with Firebase data.
-        Ensures only valid date entries are processed.
-        """
+        # Updates the trend graph with Firebase data.
         self.plotItem.clear()
-
         if not dataList:
             print("No data found.")
             return
 
-        # Filter out invalid document IDs that are not in the expected YYYY-MM-DD format
+        # Validate and format dates
         validData = []
         for item in dataList:
             try:
@@ -185,40 +162,37 @@ class TrendOverviewWindow(QtWidgets.QMainWindow):
 
         xValues = list(range(len(formattedDates)))
 
-        # Retrieve energy and mood values
+        # Extracts values
         energyValues = [item["energy"] for item in validData]
-        moodValues = [MOOD_MAP.get(item["mood"].lower(), 0) for item in validData]
+        moodValues = [item["mood"] for item in validData]  #Keep the whole scal 0-10
 
-        # Create pens for the lines
+        # Create bars
         energyBars = BarGraphItem(x=xValues, height=energyValues, width=0.3, brush=QtGui.QColor("#8caa9a"))  # Green
         moodBars = BarGraphItem(x=[x + 0.35 for x in xValues], height=moodValues, width=0.3, brush=QtGui.QColor("#aa7d51"))  # Brown
 
-
         # Plot both lines using the same X-axis values
-
         self.plotItem.addItem(energyBars)
         self.plotItem.addItem(moodBars)
 
-
-        # Set custom axis labels
+        # Custom X-axis labels
         bottomAxis = self.plotItem.getAxis('bottom')
         customXTicks = [(i, formattedDates[i] + " ") for i in range(len(formattedDates))]
         bottomAxis.setHeight(40)  # Adjust spacing below labels
         bottomAxis.setTicks([customXTicks])
 
-
-        # Ensure smooth scrolling instead of zooming
+        # Set fixed X-axis range to maintain consistent scrolling behavior
         self.plotItem.setXRange(-1, len(formattedDates), padding=0.1)
         self.plotItem.getViewBox().setLimits(xMin=-0.5, xMax=len(formattedDates) - 0.5)
 
+        # Add legend for energy and mood levels
         self.legend = LegendItem((100, 60), offset=(-10, 10))  # (width, height), (x-offset, y-offset)
         self.legend.setParentItem(self.plotItem)
         self.legend.addItem(energyBars, "Energy Level")
         self.legend.addItem(moodBars, "Mood Level")
+
 # ------------------------------
 # SECTION: Main Function
 # ------------------------------
-
 def main():
     app = QtWidgets.QApplication(sys.argv)
     window = TrendOverviewWindow()
