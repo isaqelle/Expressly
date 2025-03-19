@@ -102,11 +102,9 @@ class Ui_Form(object):
         Form.resize(800, 600)
         Form.setFixedSize(800, 600)
         Form.setStyleSheet("background-color: rgb(232, 228, 214);")
-<<<<<<< HEAD
         
-=======
         Form.setWindowTitle("Calendar")
->>>>>>> 5d51a830ccf75dba896841a3da4dfcdbe543460d
+
 
         # Calendar Label ("CALENDAR" title)
         self.calendarLabel = QtWidgets.QLabel(Form)
